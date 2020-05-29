@@ -27,10 +27,10 @@ bsd.matrix <- function(locus.brlens, species.tree, mean.brlen = 0.05, ncore = 1)
 		 }
 		 cl <- makeCluster(ncore)
 	         registerDoParallel(cl)
-        	 print(paste("Starting parallel computing with", ncore, "cores"))
+        	 cat(paste("Starting parallel computing with", ncore, "cores"), fill = T)
         	 res.par <- foreach(s.trees = sub.trees, j = 1:length(trs), .packages = c("phangorn", "ape"), .export = c("bsd.dist")) %dopar% c(compute.tree.dists(tree.sub.list = s.trees, fix.tree = trs[[j]]), rep(NA, bsdmatdim-j+1))
         	 stopCluster(cl)
-		 print("Finished parallel computing")
+		 cat("Finished parallel computing", fill = T)
 		 bsd.mat <- do.call(rbind, res.par)
 	}
 
@@ -38,7 +38,7 @@ bsd.matrix <- function(locus.brlens, species.tree, mean.brlen = 0.05, ncore = 1)
 	
 	if(!is.null(rownames(locus.brlens))) rownames(bsd.mat) <- colnames(bsd.mat) <- locnames
 	
-	bsd.mat <- as.dist(bsd.mat)
+	#bsd.mat <- as.dist(bsd.mat)
 
 	return(bsd.mat)
 }

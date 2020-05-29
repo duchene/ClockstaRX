@@ -1,11 +1,9 @@
-# Identify best number of clusters of rates using k-means. Requires package cluster
-
-group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plot = F){
+group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F, verbose = T){
 
 	#Clustering. The criterion for clustering is the following: if there is a significant decline in gap from one cluster cluster to two, then there is a single cluster. Otherwhise, the largest increase in gap leads to the optimum number of clusters (see Duchene et al. 2018, Syst. Biol.).
 	
-	if("bsd.clock.space" %in% names(clockspace)) mds <- T
-	if("pca.clock.space" %in% names(clockspace)) pca <- T
+	if("bsd.clock.space" %in% names(clockspace)) mds <- T else mds <- F
+	if("pca.clock.space" %in% names(clockspace)) pca <- T else pca <- F
 	
 	nimput <- 1:length(clockspace[[grep("clock[.]space", names(clockspace))[1]]])
 	
@@ -30,12 +28,14 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plot = F){
         })
         npartbsdW <- sapply(nimput, function(x) gapCR(gapstablebsdW[[x]][,3], gapstablebsdW[[x]][,4]))
     
-    # Collect cluster data at all numbers of clusters, for each rates space.
-    clust.bsd <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$bsd.clock.space[[y]]$points, k = x)$clustering)))
-    clust.bsdW <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.bsd.clock.space[[y]]$points, k = x)$clustering)))
-    }
+	# Collect cluster data at all numbers of clusters, for each rates space.
+    	clust.bsd <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$bsd.clock.space[[y]]$points, k = x)$clustering)))
+    	clust.bsdW <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.bsd.clock.space[[y]]$points, k = x)$clustering)))
+    	
+	}
     
-    if(pca){
+	if(pca){
+	
 	clusdatpca <- lapply(nimput, function(x) clusGap(clockspace$pca.clock.space[[x]]$points, B = boot.samps, FUNcluster = pam, K.max = kmax))
         gapstablepca <- lapply(nimput, function(x){
                      tab <- clusdatpca[[x]]$Tab
@@ -55,25 +55,34 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plot = F){
 	clust.pca <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$pca.clock.space[[y]]$points, k = x)$clustering)))
     	clust.pcaW <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.pca.clock.space[[y]]$points, k = x)$clustering)))
 
-    }
+    	}
     
-    #rownames(clust.raw) <- rownames(clust.bsd) <- rownames(clust.bsdW) <- rownames(clockspace$imputed.clocks[[1]])
-    #colnames(clust.raw) <- colnames(clust.bsd) <- colnames(clust.bsdW) <- paste0("k=", 1:kmax)
+	#rownames(clust.raw) <- rownames(clust.bsd) <- rownames(clust.bsdW) <- rownames(clockspace$imputed.clocks[[1]])
+    	#colnames(clust.raw) <- colnames(clust.bsd) <- colnames(clust.bsdW) <- paste0("k=", 1:kmax)
 	
-	if(make.plot){
-		dev.new()
-		if(mds && pca) par(mfrow = c(2, 2)) else par(mfrow = c(1, 2))
+	if(make.plots){
+		if(mds & pca){
+		        dev.new(width=16, height=8, unit="in")
+			par(mfrow = c(2, 4))
+		} else {
+		        dev.new(width=16, height=4, unit="in")
+			par(mfrow = c(1, 4))
+		}
 		if(mds){
-			plot(clockspace$bsd.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.bsd[[1]][,npartbsd[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Relatve rates (Sammon)")
+			plot(clockspace$bsd.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.bsd[[1]][,npartbsd[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Relatve rates (MDS)")
 			legend("topright", legend = paste0("k = ", npartbsd[1]))
-			plot(clockspace$weighted.bsd.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.bsdW[[1]][,npartbsdW[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (Sammon)")
+			plot(clusdatbsd[[1]], main = c("Support for k clusters\nof relative rates (MDS)"))
+			plot(clockspace$weighted.bsd.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.bsdW[[1]][,npartbsdW[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (MDS)")
 			legend("topright", legend = paste0("k = ", npartbsdW[1]))
+			plot(clusdatbsdW[[1]], main = c("Support for k clusters\nof residual rates (MDS)"))
 		}
 		if(pca){
 			plot(clockspace$pca.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.pca[[1]][,npartpca[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Relatve rates (PCA)")
                      	legend("topright", legend = paste0("k = ", npartpca[1]))
-		     	plot(clockspace$weighted.pca.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.pcaW[[1]][,npartpcaW[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (PCA)")
+		     	plot(clusdatpca[[1]], main = c("Support for k clusters\nof relative rates (PCA)"))
+			plot(clockspace$weighted.pca.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.pcaW[[1]][,npartpcaW[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (PCA)")
                  	legend("topright", legend = paste0("k = ", npartpcaW[1]))
+			plot(clusdatpcaW[[1]], main = c("Support for k clusters\nof residual rates (PCA)"))
 		}
 		
 		# If using the package mice for imputation, then add plot summarising the clustering findings of different imputations.
@@ -81,9 +90,10 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plot = F){
 	}
 	
 	# Return clustering data and best numbers of clusters for each rates matrix.
-	# MISSING: RETURN DATA ABOUT SUPPORT FOR EACH NUMBER OF CLUSTERS.
 	reslist <- clockspace
-	if(mds) reslist <- c(reslist, list(bsd.clustering = clust.bsd, weighted.bsd.clustering = clust.bsdW, bsd.best.k = npartbsd, weighted.bsd.best.k = npartbsdW))
-	if(pca) reslist <- c(reslist, list(pca.clustering = clust.pca, weighted.pca.clustering = clust.pcaW, pca.best.k = npartpca, weighted.pca.best.k = npartpcaW))
+	if(mds) reslist <- c(reslist, list(bsd.cluster.support = clusdatbsd, weighted.bsd.cluster.support = clusdatbsdW, bsd.clustering = clust.bsd, weighted.bsd.clustering = clust.bsdW, bsd.best.k = npartbsd, weighted.bsd.best.k = npartbsdW))
+	if(pca) reslist <- c(reslist, list(pca.cluster.support = clusdatpca, weighted.pca.cluster.support = clusdatpcaW, pca.clustering = clust.pca, weighted.pca.clustering = clust.pcaW, pca.best.k = npartpca, weighted.pca.best.k = npartpcaW))
+	if(verbose){ cat("Output includes:", fill = T)
+        for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T) }
 	return(reslist)
 }

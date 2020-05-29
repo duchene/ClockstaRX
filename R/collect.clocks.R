@@ -1,6 +1,4 @@
-# Collect branch lengths from gene trees if present in species tree.
-
-collect.clocks <- function(loctrs, sptr, make.plot = T, branch.support.threshold = 0){
+collect.clocks <- function(loctrs, sptr, branch.support.threshold = 0, verbose = T){
 	require(phangorn)
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
 
@@ -11,12 +9,14 @@ collect.clocks <- function(loctrs, sptr, make.plot = T, branch.support.threshold
 	# Collect number of samples per branch
 	locN <- apply(ratesmat, 2, function(x) sum(!is.na(x)))
 	
-	# Consider making plot showing rates distributions across branches.
-	#if(make.plot){
-	#	dev.new()
-	#}
-
 	# Return rates and N for each species tree branch
-	reslist <- list(raw.rates.matrix = ratesmat, N.loci.per.branch = locN)
+	if(verbose) cat("Output includes:", fill = T)
+	# Export tree with missing data as annotations
+	trN <- sptr
+	trN$edge.length <- locN
+	trlen <- sptr
+	trlen$edge.length <- apply(ratesmat, 2, function(x) if(all(is.na(x))) 0 else median(x, na.rm = T))
+	reslist <- list(raw.rates.matrix = ratesmat, N.loci.per.branch = locN, N.samples.tree = trN, median.clock.tree = trlen)
+	if(verbose) for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T)
 	return(reslist)
 }
