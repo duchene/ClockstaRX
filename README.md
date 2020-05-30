@@ -1,7 +1,6 @@
 ![logo](clockstarx_logo.png)
 
-ClockstaRX
-=========
+
 
 David Duchene, Mezzalina Vankan, Sebastian Duchene, and Simon Y.W. Ho.
 
@@ -11,7 +10,7 @@ Research School of Biology
 
 Australian National University
 
-18 March, 2020
+30 May, 2020
 
 
 Introduction
