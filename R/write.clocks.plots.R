@@ -115,8 +115,8 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
     rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))
     if(any(abs(c(lxW, lyW)) < 1e-4)){
                 nonzeroloads <- which(abs(lxW) > 1e-4 & abs(lyW) > 1e-4)
-                lxW <- cbind(lx[nonzeroloads,])
-                lyW <- cbind(ly[nonzeroloads,])
+                lxW <- cbind(lxW[nonzeroloads,])
+                lyW <- cbind(lyW[nonzeroloads,])
     }
     plot(groupclocks$weighted.pca.clock.space[[1]][[1]][,1], groupclocks$weighted.pca.clock.space[[1]][[1]][,2], pch = 19, col = as.numeric(groupclocks$weighted.pca.clustering[[1]][, groupclocks$weighted.pca.best.k[1]]) + 1, xlab=paste0("PCA 1 (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PCA 2 (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Residual rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1]))), max(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2]))), max(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2])))))
 	legend("topright", legend = paste0("k = ", groupclocks$weighted.pca.best.k[1]))
