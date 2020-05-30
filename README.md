@@ -4,39 +4,33 @@
 
 David Duchene, Mezzalina Vankan, Sebastian Duchene, and Simon Y.W. Ho.
 
- - david.duchene[at]anu.edu.au
-
+david.duchene[at]anu.edu.au
 Research School of Biology
-
 Australian National University
 
 30 May, 2020
 
 
-Introduction
-------------
+Introduction to ClockstaRX
+--------------------------
 
-Estimating evolutionary timescales and molecular evolutionary rates with genome-scale data sets is increasingly common in the biological sciences.
+Estimating molecular evolutionary rates and evolutionary timescales with genome-scale data  is increasingly common in the biological sciences.
 
-ClockstaRX takes the phylogenetic branch lengths of locus trees and a species tree topology. The branch-score distance, known as sBSDmin is calculated for every pair of trees as a measure of the difference in their patterns of among-lineage rate variation. These distances are used to infer the best partitioning strategy using the GAP statistic with the PAM clustering algorithm, as implemented in the package cluster (Maechler et al., 2012) (for details of the sBSDmin metric, see Duchene et al., 2014b).
+ClockstaRX is an R package for analyses of phylogenomic molecular evolutionary clocks. It takes the phylogenetic branch lengths of locus trees and a species tree topology. For each of the branches present in the species tree (represented as a quartet), the data on branch lengths is extracted from across locus trees. Cases where quartets are missing in locus trees are taken as missing data due to tree estimation error or discordant gene tree history.
 
+The method represents the available data on relative molecular clocks in two dimensions (using MDS or PCA). ClockstaRX allows the user to visualize the variation of rates across the data and to identify the loci loci and lineages with outlying signals. It also identifies the optimal number of clocks in the data for subsequent molecular dating analysis with programs such as [BEAST](http://beast.bio.ed.ac.uk/Main_Page), [MrBayes](http://mrbayes.sourceforge.net/), [PhyloBayes](http://megasun.bch.umontreal.ca/People/lartillot/www/index.htm). 
 
+Please follow [this link](http://bioinformatics.oxfordjournals.org/content/early/2013/12/02/bioinformatics.btt665.full) for the publication of the previous version of ClockstaR.
 
-What is ClockstaR?
------------------
-ClockstaR is an R package for phylogenetic molecular clock analyses of multi-gene data sets. It uses the patterns of among lineage rate variation for the different genes to select the clock-partitioning strategy. The method uses a phylogenetic tree distance metric and an unsupervised machine learning algorithm to identify the optimal number of clock-partitoins, and which genes should be analysed under each of the partitons. The partitioning stategy selected in ClocsktaR can be used for subsequent molecular clock analysis with programs such as [BEAST](http://beast.bio.ed.ac.uk/Main_Page), [MrBayes](http://mrbayes.sourceforge.net/), [PhyloBayes](http://megasun.bch.umontreal.ca/People/lartillot/www/index.htm),and others.
+ClockstaRX requires [R](http://www.r-project.org/) and some R dependencies that can be obtained through R, as explained below.
 
-Please follow [this link](http://bioinformatics.oxfordjournals.org/content/early/2013/12/02/bioinformatics.btt665.full) for the original publication.
-
-ClockstaR requires an [R](http://www.r-project.org/) installation. It also requires some R dependencies, which can be obtained through R, as explained in bellow.
-
-Please send any requests or questions to Sebastian Duchene (sebastian.duchene[at]sydney.edu.au). Some other software and resources can be found at the [Molecular Ecology, Evolution, and Phylogenetics Laboratory](http://sydney.edu.au/science/biology/meep/) at the University of Sydney.
+Any queries on this version can be sent to David A. Duchene (david.duchene[at]anu.edu.au).
 
 
-Getting started:
-----------------
+Getting started
+---------------
 
-The following instructions use the clockstarx_example_data folder, which contains some tree files in newick format. One is a file of locus trees () and the other is a file of the species tree (). To run ClockstaRX please format your data similar to the example data in clockstar_example_data.
+The following instructions use the clockstarx_example_data folder, which contains some tree files in newick format. One is a file of locus trees (example_locus_trees.tre) and the other is a file of the species tree (example_species_trees.tre). To run ClockstaRX please format your data similar to the example data in clockstar_example_data.
 
 ClockstaRX can be installed directly from GitHub. This requires the devtools package. Type the following code at the R prompt to install all the necessary tools (note you will need internet connection to download the packages directly):. 
 
@@ -54,14 +48,10 @@ library(ClockstaRX)
 
 To see an example on how the program is run type:
 
-```coffee
-example(ClockstaRX)
-```
-
-The rest of this tutorial uses the clockstar_example_data folder
-
 Extracting the branch lengths of locus trees
 --------------------------------------------
+
+The rest of this tutorial uses the clockstar_example_data folder
 
 The first step is to load the trees to R.
 
