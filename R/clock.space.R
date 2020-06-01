@@ -3,7 +3,7 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = T, mean
 	# If the package mice is to be used for imputation (possibly to add unwanted signal) add the following two arguments: N.imputations = 1, prop.sample.for.imputation = 0.1,
 	
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
-	# Impute data (uses mean for avoiding distortions)
+	# Impute data (uses mean for avoiding distortions). Branches with all NAs are turned into the global mean (no contribution to space); branches with a single value also have all NAs replaced with global mean, while branches with more than a single value have NAs replaced by the branch mean.
 	raw.rates.matrix <- apply(ratesmat$raw.rates.matrix, 2, function(x){
 		 if(log.branches){
 			if(any(x == 0, na.rm = T)) x[x == 0] <- 1e-6
@@ -12,6 +12,7 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = T, mean
 		 if(sum(is.na(x)) < (length(x) - 2) & any(x < 0, na.rm = T)) x <- x + abs(min(x, na.rm = T))
 		 return(x)
 	})
+	
 	medianlen <- mean(as.numeric(raw.rates.matrix), na.rm = T)
 	impudats <- list(apply(raw.rates.matrix, 2, function(x){
 		 nas <- is.na(x)
