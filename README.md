@@ -1,4 +1,4 @@
-![logo](clockstarx_logo.png)
+![logo](clockstarx.logo.png)
 
 
 
@@ -27,12 +27,12 @@ ClockstaRX requires [R](http://www.r-project.org/) and some R dependencies that 
 Any queries on this version can be sent to David A. Duchene (david.duchene[at]anu.edu.au).
 
 
-Getting started
----------------
+Quick start
+-----------
 
-The following instructions use the clockstarx_example_data folder, which contains some tree files in newick format. One is a file of locus trees (example_locus_trees.tre) and the other is a file of the species tree (example_species_trees.tre). To run ClockstaRX please format your data similar to the example data in clockstar_example_data.
+The following instructions use the clockstarx_example_data folder, which contains some tree files in newick format. One is a file of locus trees (example_locus_trees.tre) and the other is a file of the species tree (example_species_tree.tre). To run ClockstaRX please format your data similar to the example data in clockstar_example_data.
 
-ClockstaRX can be installed directly from GitHub. This requires the devtools package. Type the following code at the R prompt to install all the necessary tools (note you will need internet connection to download the packages directly):. 
+ClockstaRX can be installed directly from GitHub. This requires the devtools package. Type the following code at the R prompt to install all the necessary tools (note you will need internet connection to download the packages directly).
 
 ```coffee
 install.packages("devtools")
@@ -40,18 +40,44 @@ library(devtools)
 install_github('ClockstaRX', 'duchene')
 ```
 
-After downloading and installing, load ClockstaR with the function *library*.
+After downloading and installing, load ClockstaRX with the function *library*.
 
 ```coffee
 library(ClockstaRX)
 ```
 
-To see an example on how the program is run type:
+The rest of this tutorial uses the clockstar_example_data folder. The locus trees and species tree must be loaded into R as follows (example data set used).
+
+```coffee
+locus.trees <- read.tree("clockstarx_example_data/example_locus_trees.tre")
+species.tree <- read.tree("clockstarx_example_data/example_species_tree.tre")
+```
+
+A complete analysis in ClockstaRX can then be performed using the *diagnose.clocks* function.
+
+```coffee
+example.analysis <- diagnose.clocks(locus.trees, species.tree, ncore = 2, make.plots = T, pdf.file = "example.clockstarx")
+```
+
+The printed output explains the steps performed and the objects saved (in this case in the R object *example.analysis*).
+
+Using the argument make.plots = T as above will create one figure within R (not saved in drive). It shows the distribution of loci across the space of clocks, the branches of the unrooted species tree with the greatest contribution to variation, and the results of clustering.
+
+![logo](example.fig.1.png)
+
+ClockstaRX will also generate two PDF files. The first shows the space of (in this case as example.clockstarx.PCA.pdf and example.clockstarx.branchLoadings.pdf).
+
+
+```coffee
+
+```
+
+Details of analysis steps and output
+------------------------------------
 
 Extracting the branch lengths of locus trees
 --------------------------------------------
 
-The rest of this tutorial uses the clockstar_example_data folder
 
 The first step is to load the trees to R.
 

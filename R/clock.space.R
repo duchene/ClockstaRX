@@ -77,8 +77,38 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = T, mean
 		    plot(mdsdata.weighted[[1]]$points, pch = 19, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (MDS)")
 		}
 		if(pca){
-		    plot(pcadata.raw[[1]]$points, pch = 19, xlab = "Dim 1", ylab = "Dim 2", main = "Raw rates (PCA)")
-                    plot(pcadata.weighted[[1]]$points, pch = 19, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (PCA)")
+		    
+		    topload <- head(order(pcadata.raw[[1]][[2]][,1]), 5)
+        ordpc2 <- order(pcadata.raw[[1]][[2]][,2])
+        topload <- c(topload, head(ordpc2[-which(ordpc2 %in% topload)], 5))
+        lx <- cbind(pcadata.raw[[1]][[2]][topload,1])
+        ly <- cbind(pcadata.raw[[1]][[2]][topload,2])
+        rownames(lx) <- rownames(ly) <- gsub("V", "br ", rownames(lx))
+        if(any(abs(c(lx, ly)) < 1e-4)){
+                nonzeroloads <- which(abs(lx) > 1e-4 & abs(ly) > 1e-4)
+                lx <- cbind(lx[nonzeroloads,])
+                ly <- cbind(ly[nonzeroloads,])
+        }
+        plot(pcadata.raw[[1]]$points, pch = 19, xlab=paste0("PC 1 (", round(pcadata.raw[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(pcadata.raw[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Raw rates (PCA)", xlim = c(min(c(range(lx), range(pcadata.raw[[1]][[1]][,1]))), max(c(range(lx), range(pcadata.raw[[1]][[1]][,1])))), ylim = c(min(c(range(ly), range(pcadata.raw[[1]][[1]][,2]))), max(c(range(ly), range(pcadata.raw[[1]][[1]][,2])))))
+        abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
+        arrows(x0=0, x1=lx, y0=0, y1=ly, length=0.1, lwd=1)
+        text(lx, ly, labels=rownames(lx), pos = c(3,1,3,1), offset=0.3, cex=1)
+		    
+		    topload <- head(order(pcadata.weighted[[1]][[2]][,1]), 5)
+        ordpc2 <- order(pcadata.weighted[[1]][[2]][,2])
+        topload <- c(topload, head(ordpc2[-which(ordpc2 %in% topload)], 5))
+        lxW <- cbind(pcadata.weighted[[1]][[2]][topload,1])
+    lyW <- cbind(pcadata.weighted[[1]][[2]][topload,2])
+    rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))
+    if(any(abs(c(lxW, lyW)) < 1e-4)){
+                nonzeroloads <- which(abs(lxW) > 1e-4 & abs(lyW) > 1e-4)
+                lxW <- cbind(lxW[nonzeroloads,])
+                lyW <- cbind(lyW[nonzeroloads,])
+    }
+        	plot(pcadata.weighted[[1]]$points, pch = 19, xlab=paste0("PC 1 (", round(pcadata.weighted[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(pcadata.weighted[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Residual rates (PCA)", xlim = c(min(c(range(lxW), range(pcadata.weighted[[1]][[1]][,1]))), max(c(range(lxW), range(pcadata.weighted[[1]][[1]][,1])))), ylim = c(min(c(range(lyW), range(pcadata.weighted[[1]][[1]][,2]))), max(c(range(lyW), range(pcadata.weighted[[1]][[1]][,2])))))
+        	abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
+    		arrows(x0=0, x1=lxW, y0=0, y1=lyW, length=0.1, lwd=1)
+    		text(lxW, lyW, labels=rownames(lxW), pos = c(3,1,3,1), offset=0.1, cex=1)
 		}
 	}
 	

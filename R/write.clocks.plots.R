@@ -73,7 +73,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	legend("topright", legend = paste0("k = ", groupclocks$weighted.bsd.best.k[1]))
 	
 	# Plot the new variable results
-	if(pca) colstart <- 5 else 3
+	if(pca) colstart <- 5 else colstart <- 3
 	for(i in colstart:length(varstoplot)){
               plot(groupclocks$bsd.clock.space[[1]]$points, pch = 19, col = varstoplot[,i], xlab = "Dim 1", ylab = "Dim 2", main = paste(colnames(varstoplot)[i], "\n(relative rates)"))
 	      if(length(uniquevals) > 0) if(length(uniquevals) >= i) if(!is.null(uniquevals[[i]])) legend("topleft", legend = uniquevals[[i]], col = 2:(length(uniquevals[[i]]) + 1), pch = 19)
@@ -125,7 +125,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
     text(lxW, lyW, labels=rownames(lxW), pos = c(3,1,3,1), offset=0.1, cex=1)
 
 	# Plot the new variable results
-	if(mds) colstart <- 5 else 3
+	if(mds) colstart <- 5 else colstart <- 3
 	for(i in colstart:length(varstoplot)){
               plot(groupclocks$pca.clock.space[[1]][[1]], pch = 19, col = varstoplot[,i], main = paste(colnames(varstoplot)[i], "\n(relative rates)"), xlab = "PCA 1", ylab = "PCA 2", xlim = c(min(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1]))), max(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2]))), max(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2])))))
 	      abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
