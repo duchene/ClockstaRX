@@ -1,16 +1,24 @@
-clock.space <- function(ratesmat, sptr, pca = T, mds = F, mean.scaling.brlen = 0.05, ncore = 1, make.plots = F, sammon.correction = F, verbose = T){
+clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = T, mean.scaling.brlen = 0.05, ncore = 1, make.plots = F, sammon.correction = F, verbose = T){
 
 	# If the package mice is to be used for imputation (possibly to add unwanted signal) add the following two arguments: N.imputations = 1, prop.sample.for.imputation = 0.1,
 	
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
 	# Impute data (uses mean for avoiding distortions)
-	medianlen <- mean(as.numeric(ratesmat$raw.rates.matrix), na.rm = T)
-	impudats <- list(apply(ratesmat$raw.rates.matrix, 2, function(x){
+	raw.rates.matrix <- apply(ratesmat$raw.rates.matrix, 2, function(x){
+		 if(log.branches){
+			if(any(x == 0, na.rm = T)) x[x == 0] <- 1e-6
+			x <- log(x)
+		 }
+		 if(sum(is.na(x)) < (length(x) - 2) & any(x < 0, na.rm = T)) x <- x + abs(min(x, na.rm = T))
+		 return(x)
+	})
+	medianlen <- mean(as.numeric(raw.rates.matrix), na.rm = T)
+	impudats <- list(apply(raw.rates.matrix, 2, function(x){
 		 nas <- is.na(x)
 		 if(any(nas)){
 			if(all(nas)) return(rep(medianlen, length(x)))
-			x[nas] <- mean(x, na.rm = T)
-		 	return(x)
+			if(sum(nas) == (length(x) - 1)) x[nas] <- rep(medianlen, (length(x) - 1)) else x[nas] <- mean(x, na.rm = T)
+			return(x)
 		 } else {
 		   	return(x)
 		 }
