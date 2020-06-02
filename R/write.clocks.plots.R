@@ -101,7 +101,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 		lx <- cbind(lx[nonzeroloads,])
 		ly <- cbind(ly[nonzeroloads,])
 	}
-	plot(groupclocks$pca.clock.space[[1]][[1]][,1], groupclocks$pca.clock.space[[1]][[1]][,2], pch = 19, col = as.numeric(groupclocks$pca.clustering[[1]][, groupclocks$pca.best.k[1]]) + 1, xlab=paste0("PCA 1 (", round(groupclocks$pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PCA 2 (", round(groupclocks$pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Relative rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1]))), max(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2]))), max(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2])))))
+	plot(groupclocks$pca.clock.space[[1]][[1]][,1], groupclocks$pca.clock.space[[1]][[1]][,2], pch = 19, col = as.numeric(groupclocks$pca.clustering[[1]][, groupclocks$pca.best.k[1]]) + 1, xlab=paste0("PC 1 (", round(groupclocks$pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(groupclocks$pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Relative rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1]))), max(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2]))), max(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2])))))
 	legend("topright", legend = paste0("k = ", groupclocks$pca.best.k[1]))
 	abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
 	arrows(x0=0, x1=lx, y0=0, y1=ly, length=0.1, lwd=1)
@@ -118,7 +118,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
                 lxW <- cbind(lxW[nonzeroloads,])
                 lyW <- cbind(lyW[nonzeroloads,])
     }
-    plot(groupclocks$weighted.pca.clock.space[[1]][[1]][,1], groupclocks$weighted.pca.clock.space[[1]][[1]][,2], pch = 19, col = as.numeric(groupclocks$weighted.pca.clustering[[1]][, groupclocks$weighted.pca.best.k[1]]) + 1, xlab=paste0("PCA 1 (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PCA 2 (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Residual rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1]))), max(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2]))), max(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2])))))
+    plot(groupclocks$weighted.pca.clock.space[[1]][[1]][,1], groupclocks$weighted.pca.clock.space[[1]][[1]][,2], pch = 19, col = as.numeric(groupclocks$weighted.pca.clustering[[1]][, groupclocks$weighted.pca.best.k[1]]) + 1, xlab=paste0("PC 1 (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Residual rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1]))), max(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2]))), max(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2])))))
 	legend("topright", legend = paste0("k = ", groupclocks$weighted.pca.best.k[1]))
 	abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
     arrows(x0=0, x1=lxW, y0=0, y1=lyW, length=0.1, lwd=1)
@@ -127,12 +127,12 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	# Plot the new variable results
 	if(mds) colstart <- 5 else colstart <- 3
 	for(i in colstart:length(varstoplot)){
-              plot(groupclocks$pca.clock.space[[1]][[1]], pch = 19, col = varstoplot[,i], main = paste(colnames(varstoplot)[i], "\n(relative rates)"), xlab = "PCA 1", ylab = "PCA 2", xlim = c(min(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1]))), max(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2]))), max(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2])))))
+              plot(groupclocks$pca.clock.space[[1]][[1]], pch = 19, col = varstoplot[,i], main = paste(colnames(varstoplot)[i], "\n(relative rates)"), xlab = "PC 1", ylab = "PC 2", xlim = c(min(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1]))), max(c(range(lx), range(groupclocks$pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2]))), max(c(range(ly), range(groupclocks$pca.clock.space[[1]][[1]][,2])))))
 	      abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
               if(length(uniquevals) > 0) if(length(uniquevals) >= i) if(!is.null(uniquevals[[i]])) legend("topleft", legend = uniquevals[[i]], col = 2:(length(uniquevals[[i]]) + 1), pch = 19)
 	      arrows(x0=0, x1=lx, y0=0, y1=ly, length=0.1, lwd=1)
               text(lx, ly, labels=rownames(lx), pos = c(3,1,3,1), offset=0.3, cex=1)
-              plot(groupclocks$weighted.pca.clock.space[[1]][[1]], pch = 19, col = varstoplot[,i], main = paste(colnames(varstoplot)[i], "\n(residual rates)"), xlab = "PCA 1", ylab = "PCA 2", xlim = c(min(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1]))), max(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2]))), max(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2])))))
+              plot(groupclocks$weighted.pca.clock.space[[1]][[1]], pch = 19, col = varstoplot[,i], main = paste(colnames(varstoplot)[i], "\n(residual rates)"), xlab = "PC 1", ylab = "PC 2", xlim = c(min(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1]))), max(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2]))), max(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]][[1]][,2])))))
 	      abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
 	      arrows(x0=0, x1=lxW, y0=0, y1=lyW, length=0.1, lwd=1)
     	      text(lxW, lyW, labels=rownames(lxW), pos = c(3,1,3,1), offset=0.1, cex=1)
@@ -143,17 +143,17 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	# Plot species trees with branches showing loadings in PC1 and PC2
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
 	pdf(paste0(pdf.file, ".branchLoadings.pdf"), useDingbats = F, width = 7, height = Ntip(sptr) * 0.5)
-	plot(sptr, main = paste0("Colours by nomalized PC1 loadings (", round(groupclocks$pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]][[2]][,1]), breaks = 10))])
+	plot(sptr, main = paste0("Colours by nomalized PC 1 loadings (", round(groupclocks$pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]][[2]][,1]), breaks = 10))])
         edgelabels(frame = "circle", bg = "white")
-        plot(sptr, main = paste0("Colours by normalized PC2 loadings (", round(groupclocks$pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]][[2]][,2]), breaks = 10))])
+        plot(sptr, main = paste0("Colours by normalized PC 2 loadings (", round(groupclocks$pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]][[2]][,2]), breaks = 10))])
         edgelabels(frame = "circle", bg = "white")
         sptrPC1 <- sptrPC2 <- sptr
         sptrPC1$edge.length <- groupclocks$pca.clock.space[[1]][[2]][,1]
         sptrPC2$edge.length <- groupclocks$pca.clock.space[[1]][[2]][,2]
 
-	plot(sptr, main = paste0("Colours by nomalized PC1 loadings (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]][[2]][,1]), breaks = 10))])
+	plot(sptr, main = paste0("Colours by nomalized PC 1 loadings (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]][[2]][,1]), breaks = 10))])
 	edgelabels(frame = "circle", bg = "white")
-	plot(sptr, main = paste0("Colours by normalized PC2 loadings (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]][[2]][,2]), breaks = 10))])
+	plot(sptr, main = paste0("Colours by normalized PC 2 loadings (", round(groupclocks$weighted.pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]][[2]][,2]), breaks = 10))])
 	edgelabels(frame = "circle", bg = "white")
 	sptrPC1resid <- sptrPC2resid <- sptr
 	sptrPC1resid$edge.length <- groupclocks$weighted.pca.clock.space[[1]][[2]][,1]

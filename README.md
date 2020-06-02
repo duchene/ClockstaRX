@@ -65,12 +65,19 @@ Using the argument make.plots = T as above will create one figure within R (not 
 
 ![logo](example.fig.1.png)
 
-ClockstaRX will also generate two PDF files. The first shows the space of (in this case as example.clockstarx.PCA.pdf and example.clockstarx.branchLoadings.pdf).
+ClockstaRX will also generate two PDF files.
 
+The first PDF in this case is called example.clockstarx.PCA.pdf, and shows the space of clocks with loci coloured by several basic variables that could explain the distribution of loci (number of taxa per locus, missing data, branch support, tree length, clocklikeness, topological distance to species tree). Warmer colours indicate greater values in every case.
 
-```coffee
+The first column shows raw data and the second shows data corrected by the mean across all loci (or residual rates, as proposed by Bedford and Hartl, 2008, Mol. Biol. Evol. 25(8), 1631-1638).
 
-```
+![logo](example.fig.2.png)
+
+Further variables can be added as a *diagnose clocks* using the other.data argument. Other variables must be an R data.frame.
+
+The second PDF file, in this case called example.clockstarx.branchLoadings.pdf, shows the species tree with branches coloured by their PC loadings. The first two trees show the loadings of branches in the space of raw branch data (PC1 and PC2, respectively), and the next two trees show the loadings in the space of corrected branch data. The following is an example.
+
+![logo](example.fig.3.png)
 
 Details of analysis steps and output
 ------------------------------------
@@ -79,13 +86,7 @@ Extracting the branch lengths of locus trees
 --------------------------------------------
 
 
-The first step is to load the trees to R.
-
-```coffee
-
-```
-
-Next, we will obtain the branches of locus tres where possible, using the following code:
+We can obtain the branches of locus tres where possible, using the following code:
 
 ```coffee
 raw.rates <- collect.clocks(locus.trees, species.tree, branch.support.threshold=0.5)
