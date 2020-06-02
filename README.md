@@ -82,9 +82,12 @@ The second PDF file, in this case called example.clockstarx.branchLoadings.pdf, 
 Details of analysis steps and output
 ------------------------------------
 
+The following diagram describes a stepwise analysis using ClockstaRX and the output at every step.
+
+![logo](clockstarx.structure.png)
+
 Extracting the branch lengths of locus trees
 --------------------------------------------
-
 
 We can obtain the branches of locus tres where possible, using the following code:
 
