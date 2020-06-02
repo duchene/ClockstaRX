@@ -97,10 +97,6 @@ raw.rates <- collect.clocks(locus.trees, species.tree, branch.support.threshold=
 
 The output is a list with two objects: a matrix of the branch lengths collected, and a vector telling us the the number of loci that contained each of the species tre branches.
 
-```coffee
-
-```
-
 Representing rates in two dimensions
 ------------------------------------
 
