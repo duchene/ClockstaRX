@@ -65,9 +65,9 @@ Using the argument make.plots = T as above will create one figure within R (not 
 
 ![logo](example.fig.1.png)
 
-ClockstaRX will also generate two PDF files.
+ClockstaRX will also generate two PDF files when using make.plots = T.
 
-The first PDF in this case is called example.clockstarx.PCA.pdf, and shows the space of clocks with loci coloured by several basic variables that could explain the distribution of loci (number of taxa per locus, missing data, branch support, tree length, clocklikeness, topological distance to species tree). Warmer colours indicate greater values in every case.
+The first PDF in this case is called example.clockstarx.PCA.pdf, and shows the space of clocks with loci coloured by several basic variables that could explain the distribution of loci (number of taxa per locus, missing data, branch support, tree length, clocklikeness, topological distance to species tree). Warm colours indicate high values of each variable.
 
 The first column shows raw data and the second shows data corrected by the mean across all loci (or residual rates, as proposed by Bedford and Hartl, 2008, Mol. Biol. Evol. 25(8), 1631-1638).
 
@@ -75,7 +75,7 @@ The first column shows raw data and the second shows data corrected by the mean 
 
 Further variables can be added as a *diagnose clocks* using the other.data argument. Other variables must be an R data.frame.
 
-The second PDF file, in this case called example.clockstarx.branchLoadings.pdf, shows the species tree with branches coloured by their PC loadings. The first two trees show the loadings of branches in the space of raw branch data (PC1 and PC2, respectively), and the next two trees show the loadings in the space of corrected branch data. The following is an example.
+The second PDF file, in this case called example.clockstarx.branchLoadings.pdf, shows the species tree with branches coloured by their PC loadings. The first two trees show the loadings of branches in the space of raw branch data (PC1 and PC2, respectively), and the next two trees show the loadings in the space of corrected branch data. The following is an example. Warm colours indicate high loadings.
 
 ![logo](example.fig.3.png)
 
