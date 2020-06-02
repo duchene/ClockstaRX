@@ -113,7 +113,7 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = T, mean
 	}
 	
 	# Return all imputed rates matrices and rates spaces.
-	reslist <- c(ratesmat, list(imputed.clocks = impudats))
+	reslist <- c(ratesmat, list(imputed.clocks = impudats, weighted.imputed.clocks = impudats.weighted))
 	if(mds) reslist <- c(reslist, list(bsd.pairwise.matrix = bsdmat, weighted.bsd.pairwise.matrix = bsdmats.weighted, bsd.clock.space = mdsdata.bsd, weighted.bsd.clock.space = mdsdata.weighted))
 	if(pca) reslist <- c(reslist, list(pca.clock.space = pcadata.raw, weighted.pca.clock.space = pcadata.weighted))
 	if(verbose){ cat("Output includes:", fill = T)

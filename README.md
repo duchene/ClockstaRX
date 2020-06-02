@@ -53,7 +53,7 @@ locus.trees <- read.tree("clockstarx_example_data/example_locus_trees.tre")
 species.tree <- read.tree("clockstarx_example_data/example_species_tree.tre")
 ```
 
-A complete analysis in ClockstaRX can then be performed using the *diagnose.clocks* function.
+A complete analysis in ClockstaRX can then be performed using the *diagnose.clocks* function. Note that all trees will be unrooted in the analysis.
 
 ```coffee
 example.analysis <- diagnose.clocks(locus.trees, species.tree, ncore = 2, make.plots = T, pdf.file = "example.clockstarx")
@@ -63,7 +63,9 @@ The printed output explains the steps performed and the objects saved (in this c
 
 Using the argument make.plots = T as above will create one figure within R (not saved in drive). It shows the distribution of loci across the space of clocks, the branches of the unrooted species tree with the greatest contribution to variation, and the results of clustering.
 
+
 ![logo](example.fig.1.png)
+
 
 ClockstaRX will also generate two PDF files when using make.plots = T.
 
@@ -71,20 +73,26 @@ The first PDF in this case is called example.clockstarx.PCA.pdf, and shows the s
 
 The first column shows raw data and the second shows data corrected by the mean across all loci (or residual rates, as proposed by Bedford and Hartl, 2008, Mol. Biol. Evol. 25(8), 1631-1638).
 
+
 ![logo](example.fig.2.png)
+
 
 Further variables can be added as a *diagnose clocks* using the other.data argument. Other variables must be an R data.frame.
 
 The second PDF file, in this case called example.clockstarx.branchLoadings.pdf, shows the species tree with branches coloured by their PC loadings. The first two trees show the loadings of branches in the space of raw branch data (PC1 and PC2, respectively), and the next two trees show the loadings in the space of corrected branch data. The following is an example. Warm colours indicate high loadings.
 
+
 ![logo](example.fig.3.png)
+
 
 Details of analysis steps and output
 ------------------------------------
 
 The following diagram describes a stepwise analysis using ClockstaRX and the output at every step.
 
+
 ![logo](clockstarx.structure.png)
+
 
 Extracting the branch lengths of locus trees
 --------------------------------------------
@@ -93,36 +101,44 @@ We can obtain the branches of locus tres where possible, using the following cod
 
 ```coffee
 raw.rates <- collect.clocks(locus.trees, species.tree, branch.support.threshold=0.5)
+Output includes:
+1. raw.rates.matrix
+2. N.loci.per.branch
+3. N.samples.tree
+4. median.clock.tree
 ```
 
-The output is a list with two objects: a matrix of the branch lengths collected, and a vector telling us the the number of loci that contained each of the species tre branches.
+The objects in the output include: (1) the matrix of branch lengths in the data, which can include missing data if quartets in the species tree were not present in locus trees; (2) the number of loci in each of the branches of the unrooted species tree; (3) unrooted species tree with branch lengths replaced with number of samples across loci (i.e., a branch of length zero indicates no loci contained the quartet); (4) unrooted species tree with branch lengths replaced with the mean length across the loci containing the quartet.
 
 Representing rates in two dimensions
 ------------------------------------
 
-Now we will estimate the differences between loci in terms of their rates. Three distances are calculated by ClockstaRX: the raw differences in rates, the relative differences in patterns in branch lengths (sBSDmin distances), and the residual distances (sBSDmin distances after correcting rates by the mean length of a branch across all loci, as per Bedford and Hartl, 2008). ClockstaRX will fill missing branch length data with the mean across the branch data (or the mean across the whole data set where a branch is always absent).
+Now we will represent the space of branch length patterns across loci in two dimensions.
+
+The space of these data can be represented in two dimensions using either principal components analysis (PCA) or multi-dimensional scaling (MDS). The latter option requires calculation of the pairwise distances between branches (sBSDmin distances), which can be computationally demanding and ideally calculated with multiple cores (argument ncore).
+
+In order to avoid adding distortions to the space, ClockstaRX will fill missing branch length data with the mean across the data for each given branch (or the mean across the whole data set where the data are entirely absent).
+
+Under MDS the analysis will not be used to identify the contribution of each of the branches to space. However, MDS dimensions can be further corrected using Sammon's non-linear mapping, which facilitates visualisation and clustering of the data.
 
 ```coffee
-rate.space <- clock.space(raw.rates, species.tree, ncore = 2)
+rate.space <- clock.space(raw.rates, species.tree, pca = T, mds = F, log.branches = T, mean.scaling.brlen = 0.05, ncore = 1, m
+ake.plots = F, sammon.correction = F)
+Saving results PDFs
+Output includes:
+1. raw.rates.matrix
+2. N.loci.per.branch
+3. N.samples.tree
+4. median.clock.tree
+5. imputed.clocks
+6. weighted.imputed.clocks
+7. pca.clock.space
+8. weighted.pca.clock.space
 ```
 
-This might take some time due to the optimization of the sBSDmin matrix. The screen output should look like the following:
+Analyses using MDS will have additional outputs printed to the screen.
 
-```coffee
-[1] "Making pairwise comparisons..."
-[1] "Starting parallel computing with 2 cores"
-[1] "Finished parallel computing"
-[1] "Starting parallel computing with 2 cores"
-[1] "Finished parallel computing"
-[1] "Finished making pairwise comparisons."
-Initial stress        : 0.22087
-stress after  10 iters: 0.11379, magic = 0.092
-stress after  20 iters: 0.09011, magic = 0.043
-stress after  30 iters: 0.06329, magic = 0.338
-stress after  40 iters: 0.05932, magic = 0.500
-```
-
-The saved output includes...
+The basic output of this function includes the same as in the first step with a few additions: (5) a matrix of branch lengths across loci where missing data have been filled (as explained above); (6) a matrix of weighted branch lengths across loci by the mean value across the data (method described in Bedford and Hartl, 2008); (7) PCA results including the data in two dimensions, branch loadings (their contribution to each principal component), and further statistics; (8) PCA results of weighted branch length data.
 
 Grouping loci by their clocks
 -----------------------------
@@ -131,54 +147,50 @@ Now that we collected the reliable rates from locus trees and represented them i
 
  
 ```coffee
-clocks <- group.clocks(rate.space, make.plot=T)
+clocks <- group.clocks(rate.space, boot.samps = 100, kmax = 10, make.plots = T)
+
+Clustering k = 1,2,..., K.max (= 10): .. done
+Bootstrapping, b = 1,2,..., B (= 50)  [one "." per sample]:
+.................................................. 50
+Clustering k = 1,2,..., K.max (= 10): .. done
+Bootstrapping, b = 1,2,..., B (= 50)  [one "." per sample]:
+.................................................. 50
+Output includes:
+.
+.
+.
+9. pca.cluster.support
+10. weighted.pca.cluster.support
+11. pca.clustering
+12. weighted.pca.clustering
+13. pca.best.k
+14. weighted.pca.best.k
 ```
 
-This will perform a bootstrap to choose the best number of clocks in the dimensionality-reduced data:
+This will perform a bootstrap to choose the best number of clocks in the dimensionality-reduced data.
 
-```coffee
-Clustering k = 1,2,..., K.max (= 10): .. done
-Bootstrapping, b = 1,2,..., B (= 50)  [one "." per sample]:
-.................................................. 50
-Clustering k = 1,2,..., K.max (= 10): .. done
-Bootstrapping, b = 1,2,..., B (= 50)  [one "." per sample]:
-.................................................. 50
-Clustering k = 1,2,..., K.max (= 10): .. done
-Bootstrapping, b = 1,2,..., B (= 50)  [one "." per sample]:
-.................................................. 50
-```
-
-The saved output will include ...
+The new elements in the output are: (9-10) the support for different numbers of clusters in each of the two treatments of branch lengths (raw and weighted); (11-12) the cluster for each locus in the best scheme of clustering; (13-14) the best number of clusters, k, identified in the data.
 
 Finding explanations for the distribution of rates
 --------------------------------------------------
 
-We might want to know the reasons that rates vary across loci and across lineages. For example, we might want to know the impact of missing data, topological incongruence, or some other biological hypothesis (e.g., families of genes).
+ClockstaRX can be used to explore some of the reasons for rate variation across loci and across lineages, including the impact of missing data, topological incongruence, or user-provided data (e.g., families of genes, data quality). These explorations are primarily visual guides rather than including statistical hypothesis tests.
 
-ClockstaRX allows us to do some default exploration as well as to provide our own variables for visualizing possible drivers of rates. However, these are only visual guides rather than proper statistical hypothesis tests.
-
-The following will save a PDF to the current directory with some basic default diagnostics:
+The following will save a PDF to the current directory with some basic default diagnostics.
 
 ```coffee
-ClockstaRX.outputs <- diagnose.clocks(clocks, locus.trees, species.tree, pdf.file= "trial.clock.space.pdf")
+ClockstaRX.outputs <- write.clocks.plots(clocks, locus.trees, species.tree, pdf.file = "clock.diagnosis")
 ```
 
-This saved output includes all of the output from previous ClockstaRX functions, and will lead to saved PDF graphics similar to the following:
+This saved output includes all of the output from previous ClockstaRX functions, and will save PDF graphics as shown in the quick start guide of this readme file.
 
-![Fig1](example_run_matrix.png)
-
-We can also add our own data frame with particular variables that we wish to explore in the space:
+Additional variables can be explored as a data frame with any number of columns to the argument other.data as in the following mock example.
 
 
 ```coffee
 my.data <- data.frame("Data type" = c(rep("exon", 50), rep("intron", 50)), "GC content" = runif(100))
-ClockstaRX.outputs.2 <- diagnose.clocks(clocks, locus.trees, species.tree, pdf.file= "trial.clock.space.2.pdf", other.data = my.data)
+ClockstaRX.outputs.2 <- diagnose.clocks(clocks, locus.trees, species.tree, locus.trees, species.tree, pdf.file = "clock.diagnosis.2", other.data = my.data)
 ```
-
-![Fig1](example_run_matrix.png)
-
-
-ClockstaRX can be run with other custom settings. Please see the documentation for other details or contact the authors at david.duchene[at]anu.edu.au.
 
 
 References
