@@ -37,7 +37,7 @@ ClockstaRX can be installed directly from GitHub. This requires the devtools pac
 ```coffee
 install.packages("devtools")
 library(devtools)
-install_github('ClockstaRX', 'duchene')
+install_github("duchene/ClockstaRX")
 ```
 
 After downloading and installing, load ClockstaRX with the function *library*.
@@ -67,21 +67,25 @@ Using the argument make.plots = T as above will create one figure within R (not 
 ![logo](example.fig.1.png)
 
 
-The left pane in the figure shows that there are around 5 branches that dominate the variance (branches 1, 2, 3, 73, and 74; see tree below), all of which tend to be longer in the loci towards the bottom right (the direction of the arrows). The third panel in the figure shows a similar pattern, but this time branches have been weighted by their mean across all loci. This means that we are observing an estimate of the variation that is unique to particular loci and branches, after removing the overall genomic effects on a given branch (we removed "lineage effects" and left "residual effects"). From the figure, it appears that residual effects are dominated by an elongation of yet another five branches in loci with increasing values along PC1 (branches 5, 6, 7, 8, and 65).
+The far left panel shows that five branches are dominating the variance (numbers 1, 2, 3, 73, and 74; see tree below). The direction of the arrows shows that all of these branches tend to be longer in the loci towards the bottom right of the panel.
+
+The third panel from the left is similar, but the branches have been weighted by their mean across all loci. This means that we are observing an estimate of the variation that is unique to particular loci and branches, after removing the overall genome effects on a given branch (we removed "lineage effects" and left "residual effects", as proposed by Bedford and Hartl, 2008, Mol. Biol. Evol. 25(8), 1631-1638). This panel shows that residual variation in branch lengths is dominated by an elongation of yet another five branches (5, 6, 7, 8, and 65) in the loci towards the direction of the arrows.
 
 The second and fourth panels show the Gap statistic support for each of the numbers of clusters explored (values of *k*).
 
-ClockstaRX will also generate two PDF files when using make.plots = T.
+ClockstaRX also generates two PDF files when using the argument make.plots = T.
 
 The first PDF in this case is called example.clockstarx.PCA.pdf, and shows the space of clocks with loci coloured by several basic variables that could explain the distribution of loci (number of taxa per locus, missing data, branch support, tree length, clocklikeness, topological distance to species tree). Warm colours indicate high values of each variable.
 
-The first column shows raw data and the second shows data corrected by the mean across all loci (or residual rates, as proposed by Bedford and Hartl, 2008, Mol. Biol. Evol. 25(8), 1631-1638).
+The first column shows raw branch lengths data and the second shows data weighted by the mean across all loci (or residual rates, weighted as proposed by Bedford and Hartl, 2008, Mol. Biol. Evol. 25(8), 1631-1638).
 
 
 ![logo](example.fig.2.png)
 
 
-Further variables can be added as a *diagnose clocks* using the other.data argument. Other variables must be an R data.frame.
+In this example we can see from the colours that the loci on the right of each panel (increasing value along PC1) lead to longer overall tree lengths and greater branch support compared with loci to the left. It appears that there are to very different types of loci in the data. It would be advisable to explore the source of this difference in more depth. Similarly, the analysis shows that independent models of rate variation should be used for each of these two groups of loci.
+
+ClockstaRX allows the user to explore these data further. Continuous or categorical variables for each locus can be added as a *diagnose clocks* using the other.data argument. Additional panels will be generated using those variables automatically. Other variables must be given in a single data.frame R object.
 
 The second PDF file, in this case called example.clockstarx.branchLoadings.pdf, shows the species tree with branches coloured by their PC loadings. The first two trees show the loadings of branches in the space of raw branch data (PC1 and PC2, respectively), and the next two trees show the loadings in the space of corrected branch data. The following is an example. Warm colours indicate high loadings.
 
