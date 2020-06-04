@@ -42,6 +42,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 		RF.dist(x, drop.tip(sptr, sptr$tip.label[which(!sptr$tip.label %in% x$tip.label)]), normalize = T)
 		} else {
 		return(1)
+		}
 	})
 	if("topdist" %in% default.variables) varstoplot["Distance to species tree"] <- topo.colors(10)[as.numeric(cut(topdist, breaks = 10))]
 
