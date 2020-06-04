@@ -1,4 +1,4 @@
-clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = T, mean.scaling.brlen = 0.05, ncore = 1, make.plots = F, sammon.correction = F, verbose = T){
+clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = F, mean.scaling.brlen = 0.05, ncore = 1, make.plots = F, sammon.correction = F, verbose = T){
 
 	# If the package mice is to be used for imputation (possibly to add unwanted signal) add the following two arguments: N.imputations = 1, prop.sample.for.imputation = 0.1,
 	

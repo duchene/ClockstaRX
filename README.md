@@ -67,6 +67,10 @@ Using the argument make.plots = T as above will create one figure within R (not 
 ![logo](example.fig.1.png)
 
 
+The left pane in the figure shows that there are around 5 branches that dominate the variance (branches 1, 2, 3, 73, and 74; see tree below), all of which tend to be longer in the loci towards the bottom right (the direction of the arrows). The third panel in the figure shows a similar pattern, but this time branches have been weighted by their mean across all loci. This means that we are observing an estimate of the variation that is unique to particular loci and branches, after removing the overall genomic effects on a given branch (we removed "lineage effects" and left "residual effects"). From the figure, it appears that residual effects are dominated by an elongation of yet another five branches in loci with increasing values along PC1 (branches 5, 6, 7, 8, and 65).
+
+The second and fourth panels show the Gap statistic support for each of the numbers of clusters explored (values of *k*).
+
 ClockstaRX will also generate two PDF files when using make.plots = T.
 
 The first PDF in this case is called example.clockstarx.PCA.pdf, and shows the space of clocks with loci coloured by several basic variables that could explain the distribution of loci (number of taxa per locus, missing data, branch support, tree length, clocklikeness, topological distance to species tree). Warm colours indicate high values of each variable.
@@ -145,7 +149,7 @@ Grouping loci by their clocks
 
 Now that we collected the reliable rates from locus trees and represented them in two-dimensional space, we can explore whether they form groups using k-means clustering. More details are available in Kaufman and Rousseeuw (2009) and in the documentation for package [cluster](http://cran.r-project.org/web/packages/cluster/index.html).
 
- 
+
 ```coffee
 clocks <- group.clocks(rate.space, boot.samps = 100, kmax = 10, make.plots = T)
 
