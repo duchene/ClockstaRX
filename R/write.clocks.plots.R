@@ -37,8 +37,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	rttdist <- sapply(rtts, function(x) sd(x, na.rm = T) / mean(x, na.rm = T))
 	if("rttdist" %in% default.variables) varstoplot["Midpoint-root-to-tip CV"] <- topo.colors(10)[as.numeric(cut(rttdist, breaks = 10))]
 
-	topdist <- sapply(loctrs, function(x){
-		if(all(x$tip.label %in% sptr$tip.label)) RF.dist(x, drop.tip(sptr, sptr$tip.label[which(!sptr$tip.label %in% x$tip.label)])))
+	topdist <- sapply(loctrs, function(x) RF.dist(x, drop.tip(sptr, sptr$tip.label[which(!sptr$tip.label %in% x$tip.label)])))
 	if("topdist" %in% default.variables) varstoplot["Distance to species tree"] <- topo.colors(10)[as.numeric(cut(topdist, breaks = 10))]
 
 	# Create colours for other variables
