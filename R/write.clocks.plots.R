@@ -90,9 +90,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
         if(mds) par(mfrow = c(length(varstoplot) - 3, 2)) else par(mfrow = c(length(varstoplot) - 1, 2))
 	
 	# First plot the clustering results
-	topload <- head(order(groupclocks$pca.clock.space[[1]][[2]][,1]), 5)
-        ordpc2 <- order(groupclocks$pca.clock.space[[1]][[2]][,2])
-        topload <- c(topload, head(ordpc2[-which(ordpc2 %in% topload)], 5))
+	topload <- head(order(apply(groupclocks$pca.clock.space[[1]][[2]][,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
 	lx <- cbind(groupclocks$pca.clock.space[[1]][[2]][topload,1])
 	ly <- cbind(groupclocks$pca.clock.space[[1]][[2]][topload,2])
 	rownames(lx) <- rownames(ly) <- gsub("V", "br ", rownames(lx))
@@ -107,9 +105,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	arrows(x0=0, x1=lx, y0=0, y1=ly, length=0.1, lwd=1)
 	text(lx, ly, labels=rownames(lx), pos = c(3,1,3,1), offset=0.3, cex=1)
 	
-	topload <- head(order(groupclocks$weighted.pca.clock.space[[1]][[2]][,1]), 5)
-	ordpc2 <- order(groupclocks$weighted.pca.clock.space[[1]][[2]][,2])
-	topload <- c(topload, head(ordpc2[-which(ordpc2 %in% topload)], 5))
+	topload <- head(order(apply(groupclocks$weighted.pca.clock.space[[1]][[2]][,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
 	lxW <- cbind(groupclocks$weighted.pca.clock.space[[1]][[2]][topload,1])
     lyW <- cbind(groupclocks$weighted.pca.clock.space[[1]][[2]][topload,2])
     rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))

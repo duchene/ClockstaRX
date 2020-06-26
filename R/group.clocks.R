@@ -78,9 +78,7 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F,
 		}
 		if(pca){
 			
-			topload <- head(order(clockspace$pca.clock.space[[1]][[2]][,1]), 5)
-        ordpc2 <- order(clockspace$pca.clock.space[[1]][[2]][,2])
-        topload <- c(topload, head(ordpc2[-which(ordpc2 %in% topload)], 5))
+	topload <- head(order(apply(clockspace$pca.clock.space[[1]][[2]][,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
         lx <- cbind(clockspace$pca.clock.space[[1]][[2]][topload,1])
         ly <- cbind(clockspace$pca.clock.space[[1]][[2]][topload,2])
         rownames(lx) <- rownames(ly) <- gsub("V", "br ", rownames(lx))
@@ -97,9 +95,7 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F,
 		    
 		    plot(clusdatpca[[1]], main = c("Support for k clusters\nof relative rates (PCA)"))
 			
-			topload <- head(order(clockspace$weighted.pca.clock.space[[1]][[2]][,1]), 5)
-        ordpc2 <- order(clockspace$weighted.pca.clock.space[[1]][[2]][,2])
-        topload <- c(topload, head(ordpc2[-which(ordpc2 %in% topload)], 5))
+	topload <- head(order(apply(clockspace$weighted.pca.clock.space[[1]][[2]][,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
         lxW <- cbind(clockspace$weighted.pca.clock.space[[1]][[2]][topload,1])
     lyW <- cbind(clockspace$weighted.pca.clock.space[[1]][[2]][topload,2])
     rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))

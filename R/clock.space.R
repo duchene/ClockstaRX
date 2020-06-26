@@ -65,22 +65,16 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = F, mean
 	}
 	
 	if(make.plots){
-		if(mds & pca){
-		       dev.new(width=8, height=8, unit="in")
-		       par(mfrow = c(2,2))
-		} else {
-		       dev.new(width=8, height=4, unit="in")
-		       par(mfrow = c(1,2))
-		}
 		if(mds){
+		    dev.new(width=8, height=4, unit="in")
+                    par(mfrow = c(1,2))
 		    plot(mdsdata.bsd[[1]]$points, pch = 19, xlab = "Dim 1", ylab = "Dim 2", main = "Relative rates (MDS)")
 		    plot(mdsdata.weighted[[1]]$points, pch = 19, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (MDS)")
 		}
 		if(pca){
-		    
-		    topload <- head(order(pcadata.raw[[1]][[2]][,1]), 5)
-        ordpc2 <- order(pcadata.raw[[1]][[2]][,2])
-        topload <- c(topload, head(ordpc2[-which(ordpc2 %in% topload)], 5))
+		    dev.new(width=16, height=4, unit="in")
+                    par(mfrow = c(1,4))
+	topload <- head(order(apply(pcadata.raw[[1]][[2]][,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
         lx <- cbind(pcadata.raw[[1]][[2]][topload,1])
         ly <- cbind(pcadata.raw[[1]][[2]][topload,2])
         rownames(lx) <- rownames(ly) <- gsub("V", "br ", rownames(lx))
@@ -93,10 +87,11 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = F, mean
         abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
         arrows(x0=0, x1=lx, y0=0, y1=ly, length=0.1, lwd=1)
         text(lx, ly, labels=rownames(lx), pos = c(3,1,3,1), offset=0.3, cex=1)
+
+	plot(pcadata.raw[[1]]$summary$importance[2,], pch = 19, main = "Raw rates PCA scree", ylab = "Proportion variance explained", xlab = "Principal component")
+	lines(pcadata.raw[[1]]$summary$importance[2,])
 		    
-		    topload <- head(order(pcadata.weighted[[1]][[2]][,1]), 5)
-        ordpc2 <- order(pcadata.weighted[[1]][[2]][,2])
-        topload <- c(topload, head(ordpc2[-which(ordpc2 %in% topload)], 5))
+	topload <- head(order(apply(pcadata.weighted[[1]][[2]][,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
         lxW <- cbind(pcadata.weighted[[1]][[2]][topload,1])
     lyW <- cbind(pcadata.weighted[[1]][[2]][topload,2])
     rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))
@@ -109,6 +104,9 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = F, mean
         	abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
     		arrows(x0=0, x1=lxW, y0=0, y1=lyW, length=0.1, lwd=1)
     		text(lxW, lyW, labels=rownames(lxW), pos = c(3,1,3,1), offset=0.1, cex=1)
+		
+		plot(pcadata.weighted[[1]]$summary$importance[2,], pch = 19, main = "Residual rates PCA scree", ylab = "Proportion variance explained", xlab = "Principal component")
+        	lines(pcadata.weighted[[1]]$summary$importance[2,])
 		}
 	}
 	
