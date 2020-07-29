@@ -5,55 +5,45 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F,
 	if("bsd.clock.space" %in% names(clockspace)) mds <- T else mds <- F
 	if("pca.clock.space" %in% names(clockspace)) pca <- T else pca <- F
 	
-	nimput <- 1:length(clockspace[[grep("clock[.]space", names(clockspace))[1]]])
-	
 	# Identify best number of clusters for each rates space.
 	require(cluster)
 	
 	if(mds){
 	
-	clusdatbsd <- lapply(nimput, function(x) clusGap(clockspace$bsd.clock.space[[x]]$points, B = boot.samps, FUNcluster = pam, K.max = kmax))
-	gapstablebsd <- lapply(nimput, function(x){
-                     tab <- clusdatbsd[[x]]$Tab
-             	     tab[is.infinite(tab)] <- NA
-                     return(tab)
-    	})
-	npartbsd <- sapply(nimput, function(x) gapCR(gapstablebsd[[x]][,3], gapstablebsd[[x]][,4]))
+	clusdatbsd <- clusGap(clockspace$bsd.clock.space$points, B = boot.samps, FUNcluster = pam, K.max = kmax)
+	gapstablebsd <- clusdatbsd$Tab
+        gapstablebsd[is.infinite(gapstablebsd)] <- NA
+        
+	npartbsd <- gapCR(gapstablebsd[,3], gapstablebsd[,4])
 	
-	clusdatbsdW <- lapply(nimput, function(x) clusGap(clockspace$weighted.bsd.clock.space[[x]]$points, B = boot.samps, FUNcluster = pam, K.max = kmax))
-        gapstablebsdW <- lapply(nimput, function(x){
-                     tab <- clusdatbsdW[[x]]$Tab
-                     tab[is.infinite(tab)] <- NA
-                     return(tab)
-        })
-        npartbsdW <- sapply(nimput, function(x) gapCR(gapstablebsdW[[x]][,3], gapstablebsdW[[x]][,4]))
+	clusdatbsdW <- clusGap(clockspace$weighted.bsd.clock.space$points, B = boot.samps, FUNcluster = pam, K.max = kmax)
+        gapstablebsdW <- clusdatbsdW$Tab
+        gapstablebsdW[is.infinite(gapstablebsdW)] <- NA
+        
+        npartbsdW <- gapCR(gapstablebsdW[,3], gapstablebsdW[,4])
     
 	# Collect cluster data at all numbers of clusters, for each rates space.
-    	clust.bsd <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$bsd.clock.space[[y]]$points, k = x)$clustering)))
-    	clust.bsdW <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.bsd.clock.space[[y]]$points, k = x)$clustering)))
+    	clust.bsd <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$bsd.clock.space$points, k = x)$clustering))
+    	clust.bsdW <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.bsd.clock.space$points, k = x)$clustering))
     	
 	}
     
 	if(pca){
 	
-	clusdatpca <- lapply(nimput, function(x) clusGap(clockspace$pca.clock.space[[x]]$points, B = boot.samps, FUNcluster = pam, K.max = kmax))
-        gapstablepca <- lapply(nimput, function(x){
-                     tab <- clusdatpca[[x]]$Tab
-                     tab[is.infinite(tab)] <- NA
-                     return(tab)
-        })
-        npartpca <- sapply(nimput, function(x) gapCR(gapstablepca[[x]][,3], gapstablepca[[x]][,4]))
+	clusdatpca <- clusGap(clockspace$pca.clock.space[[1]]$x[,1:2], B = boot.samps, FUNcluster = pam, K.max = kmax)
+        gapstablepca <- clusdatpca$Tab
+        gapstablepca[is.infinite(gapstablepca)] <- NA
+        
+        npartpca <- gapCR(gapstablepca[,3], gapstablepca[,4])
 
-        clusdatpcaW <- lapply(nimput, function(x) clusGap(clockspace$weighted.pca.clock.space[[x]]$points, B = boot.samps, FUNcluster = pam, K.max = kmax))
-        gapstablepcaW <- lapply(nimput, function(x){
-                     tab <- clusdatpcaW[[x]]$Tab
-                     tab[is.infinite(tab)] <- NA
-                     return(tab)
-        })
-        npartpcaW <- sapply(nimput, function(x) gapCR(gapstablepcaW[[x]][,3], gapstablepcaW[[x]][,4]))
+        clusdatpcaW <- clusGap(clockspace$weighted.pca.clock.space[[1]]$x[,1:2], B = boot.samps, FUNcluster = pam, K.max = kmax)
+        gapstablepcaW <- clusdatpcaW$Tab
+        gapstablepcaW[is.infinite(gapstablepcaW)] <- NA
+        
+        npartpcaW <- gapCR(gapstablepcaW[,3], gapstablepcaW[,4])
 	
-	clust.pca <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$pca.clock.space[[y]]$points, k = x)$clustering)))
-    	clust.pcaW <- lapply(nimput, function(y) do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.pca.clock.space[[y]]$points, k = x)$clustering)))
+	clust.pca <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$pca.clock.space[[1]]$x[,1:2], k = x)$clustering))
+    	clust.pcaW <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.pca.clock.space[[1]]$x[,1:2], k = x)$clustering))
 
     	}
     
@@ -69,48 +59,48 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F,
 			par(mfrow = c(1, 4))
 		}
 		if(mds){
-			plot(clockspace$bsd.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.bsd[[1]][,npartbsd[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Relatve rates (MDS)")
-			legend("topright", legend = paste0("k = ", npartbsd[1]))
-			plot(clusdatbsd[[1]], main = c("Support for k clusters\nof relative rates (MDS)"))
-			plot(clockspace$weighted.bsd.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.bsdW[[1]][,npartbsdW[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (MDS)")
-			legend("topright", legend = paste0("k = ", npartbsdW[1]))
-			plot(clusdatbsdW[[1]], main = c("Support for k clusters\nof residual rates (MDS)"))
+			plot(clockspace$bsd.clock.space$points, pch = 19, col = as.numeric(clust.bsd[,npartbsd[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Relatve rates (MDS)")
+			legend("topright", legend = paste0("k = ", npartbsd))
+			plot(clusdatbsd, main = c("Support for k clusters\nof relative rates (MDS)"))
+			plot(clockspace$weighted.bsd.clock.space$points, pch = 19, col = as.numeric(clust.bsdW[,npartbsdW[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (MDS)")
+			legend("topright", legend = paste0("k = ", npartbsdW))
+			plot(clusdatbsdW, main = c("Support for k clusters\nof residual rates (MDS)"))
 		}
 		if(pca){
 			
-	topload <- head(order(apply(clockspace$pca.clock.space[[1]][[2]][,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
-        lx <- cbind(clockspace$pca.clock.space[[1]][[2]][topload,1])
-        ly <- cbind(clockspace$pca.clock.space[[1]][[2]][topload,2])
+	topload <- head(order(apply(clockspace$pca.clock.space[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
+        lx <- cbind(clockspace$pca.clock.space[[1]]$rotation[topload,1])
+        ly <- cbind(clockspace$pca.clock.space[[1]]$rotation[topload,2])
         rownames(lx) <- rownames(ly) <- gsub("V", "br ", rownames(lx))
         if(any(abs(c(lx, ly)) < 1e-4)){
                 nonzeroloads <- which(abs(lx) > 1e-4 & abs(ly) > 1e-4)
                 lx <- cbind(lx[nonzeroloads,])
                 ly <- cbind(ly[nonzeroloads,])
         }
-			plot(clockspace$pca.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.pca[[1]][,npartpca[1]]) + 1, xlab=paste0("PC 1 (", round(clockspace$pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(clockspace$pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Relatve rates (PCA)", xlim = c(min(c(range(lx), range(clockspace$pca.clock.space[[1]][[1]][,1]))), max(c(range(lx), range(clockspace$pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(ly), range(clockspace$pca.clock.space[[1]][[1]][,2]))), max(c(range(ly), range(clockspace$pca.clock.space[[1]][[1]][,2])))))
-            legend("topright", legend = paste0("k = ", npartpca[1]))
+			plot(clockspace$pca.clock.space[[1]]$x[,1:2], pch = 19, col = as.numeric(clust.pca[,npartpca[1]]) + 1, xlab=paste0("PC 1 (", round(summary(clockspace$pca.clock.space[[1]])$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(summary(clockspace$pca.clock.space[[1]])$importance[5]*100, 1), "%)"), main = "Relatve rates (PCA)", xlim = c(min(c(range(lx), range(clockspace$pca.clock.space[[1]]$x[,1]))), max(c(range(lx), range(clockspace$pca.clock.space[[1]]$x[,1])))), ylim = c(min(c(range(ly), range(clockspace$pca.clock.space[[1]]$x[,2]))), max(c(range(ly), range(clockspace$pca.clock.space[[1]]$x[,2])))))
+            legend("topright", legend = paste0("k = ", npartpca))
             abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
         arrows(x0=0, x1=lx, y0=0, y1=ly, length=0.1, lwd=1)
         text(lx, ly, labels=rownames(lx), pos = c(3,1,3,1), offset=0.3, cex=1)
 		    
-		    plot(clusdatpca[[1]], main = c("Support for k clusters\nof relative rates (PCA)"))
+		    plot(clusdatpca, main = c("Support for k clusters\nof relative rates (PCA)"))
 			
-	topload <- head(order(apply(clockspace$weighted.pca.clock.space[[1]][[2]][,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
-        lxW <- cbind(clockspace$weighted.pca.clock.space[[1]][[2]][topload,1])
-    lyW <- cbind(clockspace$weighted.pca.clock.space[[1]][[2]][topload,2])
+	topload <- head(order(apply(clockspace$weighted.pca.clock.space[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
+        lxW <- cbind(clockspace$weighted.pca.clock.space[[1]]$rotation[topload,1])
+    lyW <- cbind(clockspace$weighted.pca.clock.space[[1]]$rotation[topload,2])
     rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))
     if(any(abs(c(lxW, lyW)) < 1e-4)){
                 nonzeroloads <- which(abs(lxW) > 1e-4 & abs(lyW) > 1e-4)
                 lxW <- cbind(lxW[nonzeroloads,])
                 lyW <- cbind(lyW[nonzeroloads,])
     }
-			plot(clockspace$weighted.pca.clock.space[[1]]$points, pch = 19, col = as.numeric(clust.pcaW[[1]][,npartpcaW[1]]) + 1, xlab=paste0("PC 1 (", round(clockspace$weighted.pca.clock.space[[1]][[3]]$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(clockspace$weighted.pca.clock.space[[1]][[3]]$importance[5]*100, 1), "%)"), main = "Residual rates (PCA)", xlim = c(min(c(range(lxW), range(clockspace$weighted.pca.clock.space[[1]][[1]][,1]))), max(c(range(lxW), range(clockspace$weighted.pca.clock.space[[1]][[1]][,1])))), ylim = c(min(c(range(lyW), range(clockspace$weighted.pca.clock.space[[1]][[1]][,2]))), max(c(range(lyW), range(clockspace$weighted.pca.clock.space[[1]][[1]][,2])))))
-            legend("topright", legend = paste0("k = ", npartpcaW[1]))
+			plot(clockspace$weighted.pca.clock.space[[1]]$x[,1:2], pch = 19, col = as.numeric(clust.pcaW[,npartpcaW[1]]) + 1, xlab=paste0("PC 1 (", round(summary(clockspace$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(summary(clockspace$weighted.pca.clock.space[[1]])$importance[5]*100, 1), "%)"), main = "Residual rates (PCA)", xlim = c(min(c(range(lxW), range(clockspace$weighted.pca.clock.space[[1]]$x[,1]))), max(c(range(lxW), range(clockspace$weighted.pca.clock.space[[1]]$x[,1])))), ylim = c(min(c(range(lyW), range(clockspace$weighted.pca.clock.space[[1]]$x[,2]))), max(c(range(lyW), range(clockspace$weighted.pca.clock.space[[1]]$x[,2])))))
+            legend("topright", legend = paste0("k = ", npartpcaW))
             abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
     arrows(x0=0, x1=lxW, y0=0, y1=lyW, length=0.1, lwd=1)
     text(lxW, lyW, labels=rownames(lxW), pos = c(3,1,3,1), offset=0.1, cex=1)
 			
-			plot(clusdatpcaW[[1]], main = c("Support for k clusters\nof residual rates (PCA)"))
+			plot(clusdatpcaW, main = c("Support for k clusters\nof residual rates (PCA)"))
 		}
 		
 		# If using the package mice for imputation, then add plot summarising the clustering findings of different imputations.
