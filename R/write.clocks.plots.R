@@ -139,18 +139,35 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	# Plot species trees with branches showing loadings in PC1 and PC2
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
 	pdf(paste0(pdf.file, ".branchLoadings.pdf"), useDingbats = F, width = 7, height = Ntip(sptr) * 0.5)
-	plot(sptr, main = paste0("Colours by nomalized PC 1 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[2]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]]$rotation[,1]), breaks = 10))])
+	
+	pBr <- apply(groupclocks$pca.clock.space$pIL, 2, function(x) as.numeric(x < 0.05) + 1)
+	pBr[is.na(pBr)] <- 1
+	plot(sptr, main = paste0("Colours by significant PC 1 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[2]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = as.numeric(pBr[,1]))
         edgelabels(frame = "circle", bg = "white")
-        plot(sptr, main = paste0("Colours by normalized PC 2 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[5]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]]$rotation[,2]), breaks = 10))])
-        edgelabels(frame = "circle", bg = "white")
-        sptrPC1 <- sptrPC2 <- sptr
+        plot(sptr, main = paste0("Colours by significant PC 2 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[5]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = as.numeric(pBr[,2]))
+	edgelabels(frame = "circle", bg = "white")
+	
+	#plot(sptr, main = paste0("Colours by nomalized PC 1 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[2]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]]$rotation[,1]), breaks = 10))])
+        #edgelabels(frame = "circle", bg = "white")
+        #plot(sptr, main = paste0("Colours by normalized PC 2 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[5]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]]$rotation[,2]), breaks = 10))])
+        #edgelabels(frame = "circle", bg = "white")
+        
+	sptrPC1 <- sptrPC2 <- sptr
         sptrPC1$edge.length <- groupclocks$pca.clock.space[[1]]$rotation[,1]
         sptrPC2$edge.length <- groupclocks$pca.clock.space[[1]]$rotation[,2]
+	
+	pBrW <- apply(groupclocks$weighted.pca.clock.space$pIL, 2, function(x) as.numeric(x < 0.05) + 1)
+	pBrW[is.na(pBrW)] <- 1
+	plot(sptr, main = paste0("Colours by significant PC 1 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = is.numeric(pBrW[, 1]))
+        edgelabels(frame = "circle", bg = "white")
+        plot(sptr, main = paste0("Colours by significant PC 2 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[5]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = as.numeric(pBrW[, 2]))
+        edgelabels(frame = "circle", bg = "white")
 
-	plot(sptr, main = paste0("Colours by nomalized PC 1 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]]$rotation[,1]), breaks = 10))])
-	edgelabels(frame = "circle", bg = "white")
-	plot(sptr, main = paste0("Colours by normalized PC 2 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[5]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]]$rotation[,2]), breaks = 10))])
-	edgelabels(frame = "circle", bg = "white")
+	#plot(sptr, main = paste0("Colours by nomalized PC 1 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]]$rotation[,1]), breaks = 10))])
+	#edgelabels(frame = "circle", bg = "white")
+	#plot(sptr, main = paste0("Colours by normalized PC 2 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[5]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]]$rotation[,2]), breaks = 10))])
+	#edgelabels(frame = "circle", bg = "white")
+	
 	sptrPC1resid <- sptrPC2resid <- sptr
 	sptrPC1resid$edge.length <- groupclocks$weighted.pca.clock.space[[1]]$rotation[,1]
 	sptrPC2resid$edge.length <- groupclocks$weighted.pca.clock.space[[1]]$rotation[,2]
