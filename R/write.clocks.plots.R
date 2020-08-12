@@ -140,11 +140,13 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
 	pdf(paste0(pdf.file, ".branchLoadings.pdf"), useDingbats = F, width = 7, height = Ntip(sptr) * 0.5)
 	
-	pBr <- apply(groupclocks$pca.clock.space$pIL, 2, function(x) as.numeric(x < 0.05) + 1)
+	pBr <- apply(groupclocks$pca.clock.space$pIL, 2, function(x) as.numeric(x < 0.01) + 1)
 	pBr[is.na(pBr)] <- 1
-	plot(sptr, main = paste0("Colours by significant PC 1 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[2]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = as.numeric(pBr[,1]))
+	for(i in 1:ncol(groupclocks$pca.clock.space[[1]]$rotation)) pBr[which(groupclocks$pca.clock.space[[1]]$rotation[,i]^2 < 0.01), i] <- 1
+
+	plot(sptr, main = paste0("Significantly influential PC 1 branches - relative rates\n(", round(summary(groupclocks$pca.clock.space[[1]])$importance[2]*100, 1), "% variance explained; unrooted tree shown)"), edge.width = 5, edge.color = as.numeric(pBr[,1]))
         edgelabels(frame = "circle", bg = "white")
-        plot(sptr, main = paste0("Colours by significant PC 2 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[5]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = as.numeric(pBr[,2]))
+        plot(sptr, main = paste0("Significantly influential PC 2 branches - relative rates\n(", round(summary(groupclocks$pca.clock.space[[1]])$importance[5]*100, 1), "% variance explained; unrooted tree shown)"), edge.width = 5, edge.color = as.numeric(pBr[,2]))
 	edgelabels(frame = "circle", bg = "white")
 	
 	#plot(sptr, main = paste0("Colours by nomalized PC 1 loadings (", round(summary(groupclocks$pca.clock.space[[1]])$importance[2]*100, 1), "%)\nrelative rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$pca.clock.space[[1]]$rotation[,1]), breaks = 10))])
@@ -156,11 +158,13 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
         sptrPC1$edge.length <- groupclocks$pca.clock.space[[1]]$rotation[,1]
         sptrPC2$edge.length <- groupclocks$pca.clock.space[[1]]$rotation[,2]
 	
-	pBrW <- apply(groupclocks$weighted.pca.clock.space$pIL, 2, function(x) as.numeric(x < 0.05) + 1)
+	pBrW <- apply(groupclocks$weighted.pca.clock.space$pIL, 2, function(x) as.numeric(x < 0.01) + 1)
 	pBrW[is.na(pBrW)] <- 1
-	plot(sptr, main = paste0("Colours by significant PC 1 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = is.numeric(pBrW[, 1]))
+	for(i in 1:ncol(groupclocks$weighted.pca.clock.space[[1]]$rotation)) pBrW[which(groupclocks$weighted.pca.clock.space[[1]]$rotation[,i]^2 < 0.01), i] <- 1
+
+	plot(sptr, main = paste0("Significantly influential PC 1 branches - residual rates\n(", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "% variance explained; unrooted tree shown)"), edge.width = 5, edge.color = is.numeric(pBrW[, 1]))
         edgelabels(frame = "circle", bg = "white")
-        plot(sptr, main = paste0("Colours by significant PC 2 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[5]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = as.numeric(pBrW[, 2]))
+        plot(sptr, main = paste0("Significantly influential PC 2 branches - residual rates\n(", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[5]*100, 1), "% variance explained; unrooted tree shown)"), edge.width = 5, edge.color = as.numeric(pBrW[, 2]))
         edgelabels(frame = "circle", bg = "white")
 
 	#plot(sptr, main = paste0("Colours by nomalized PC 1 loadings (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "%)\nresidual rates (unrooted tree)"), edge.width = 5, edge.color = topo.colors(10)[as.numeric(cut(scale(groupclocks$weighted.pca.clock.space[[1]]$rotation[,1]), breaks = 10))])
@@ -175,7 +179,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	}
 	
 	# Return table with colours
-	if(pca) reslist <- c(groupclocks, list(species.tree.branch.loadings.pc1 = sptrPC1, species.tree.branch.loadings.pc2 = sptrPC2, species.tree.weighted.branch.loadings.pc1 = sptrPC1resid, species.tree.weighted.branch.loadings.pc2 = sptrPC2resid))
+	if(pca) reslist <- c(groupclocks, list(species.tree.branch.loadings.pc1 = sptrPC1, species.tree.branch.loadings.pc2 = sptrPC2, species.tree.weighted.branch.loadings.pc1 = sptrPC1resid, species.tree.weighted.branch.loadings.pc2 = sptrPC2resid, pca.influential.branches = pBr-1, weighted.pca.influential.branches = pBrW-1))
 	reslist <- c(reslist, list(variable.colours = varstoplot))
 	
 	cat("Output includes:", fill = T)

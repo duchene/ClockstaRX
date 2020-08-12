@@ -2,7 +2,7 @@ diagnose.clocks <- function(loctrs, sptr, sp.time.tree = T, branch.support.thres
 	cat("Collecting clocks", fill = T)
 	crx <- collect.clocks(loctrs, sptr, sp.time.tree = T, branch.support.threshold, verbose = F)
 	cat("Creating representation of clock space", fill = T)
-	crx <- clock.space(crx, sptr, pca, mds, log.branches, pca.permutations, mean.scaling.brlen, ncore, make.plots, sammon.correction, verbose = F)
+	crx <- clock.space(crx, sptr, pca, mds, sp.time.tree, log.branches, pca.permutations, mean.scaling.brlen, ncore, make.plots, sammon.correction, verbose = F)
 	cat("Grouping clocks", fill = T)
 	crx <- group.clocks(crx, boot.samps = clustering.boot.samps, kmax, make.plots, verbose = !make.plots)
 	if(make.plots){ cat("Saving results PDFs", fill = T)

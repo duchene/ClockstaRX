@@ -1,8 +1,15 @@
-clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = F, pca.permutations = 100, mean.scaling.brlen = 0.05, ncore = 1, make.plots = F, sammon.correction = F, verbose = T){
+clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.branches = F, pca.permutations = 100, mean.scaling.brlen = 0.05, ncore = 1, make.plots = F, sammon.correction = F, verbose = T){
 
 	# If the package mice is to be used for imputation (possibly to add unwanted signal) add the following two arguments: N.imputations = 1, prop.sample.for.imputation = 0.1,
 	
-	if(is.rooted(sptr)) sptr <- unroot(sptr)
+	if(sp.time.tree){
+		rootlineages <- lapply(Descendants(sptr, getMRCA(sptr, sptr$tip.label), type = "children"), function(x) sptr$tip.label[Descendants(sptr, x, type = "tips")[[1]]])
+		if(is.rooted(sptr)) sptr <- unroot(sptr)
+		rootbr <- which(apply(sptr$edge, 1, function(x) all(c(mrca.phylo(sptr, rootlineages[[1]]), mrca.phylo(sptr, rootlineages[[2]])) %in% x)))
+	} else if(is.rooted(sptr)){
+	        sptr <- unroot(sptr)
+	}
+	
 	# Impute data (uses mean for avoiding distortions). Branches with all NAs are turned into the global mean (no contribution to space); branches with a single value also have all NAs replaced with global mean, while branches with more than a single value have NAs replaced by the branch mean.
 	raw.rates.matrix <- apply(ratesmat$raw.rates.matrix, 2, function(x){
 		 if(log.branches){
@@ -13,17 +20,19 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, log.branches = F, pca.
 		 return(x)
 	})
 	
-	medianlen <- mean(as.numeric(raw.rates.matrix), na.rm = T)
+	meanlen <- mean(as.numeric(raw.rates.matrix), na.rm = T)
 	impudats <- apply(raw.rates.matrix, 2, function(x){
 		 nas <- is.na(x)
 		 if(any(nas)){
-			if(all(nas)) return(rep(medianlen, length(x)))
-			if(sum(nas) == (length(x) - 1)) x[nas] <- rep(medianlen, (length(x) - 1)) else x[nas] <- mean(x, na.rm = T)
+			if(all(nas)) return(rep(meanlen, length(x)))
+			if(sum(nas) == (length(x) - 1)) x[nas] <- rep(meanlen, (length(x) - 1)) else x[nas] <- mean(x, na.rm = T)
 			return(x)
 		 } else {
 		   	return(x)
 		 }
 	})
+	
+	if(sp.time.tree) impudats[,rootbr] <- meanlen
 	
 	# Create weighted matrices (excludes lineage effects)
 	impudats.weighted <- weigh.clocks(impudats)
