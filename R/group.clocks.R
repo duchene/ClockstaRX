@@ -68,9 +68,10 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F,
 		}
 		if(pca){
 			
+	lam <- clockspace$pca.clock.space[[1]]$sdev * sqrt(nrow(clockspace$pca.clock.space[[1]]$x))
 	topload <- head(order(apply(clockspace$pca.clock.space[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
-        lx <- cbind(clockspace$pca.clock.space[[1]]$rotation[topload,1])
-        ly <- cbind(clockspace$pca.clock.space[[1]]$rotation[topload,2])
+        lx <- cbind(t(t(clockspace$pca.clock.space[[1]]$rotation[topload,1]) * lam[1]))
+        ly <- cbind(t(t(clockspace$pca.clock.space[[1]]$rotation[topload,2]) * lam[2]))
         rownames(lx) <- rownames(ly) <- gsub("V", "br ", rownames(lx))
         if(any(abs(c(lx, ly)) < 1e-4)){
                 nonzeroloads <- which(abs(lx) > 1e-4 & abs(ly) > 1e-4)
@@ -85,9 +86,10 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F,
 		    
 		    plot(clusdatpca, main = c("Support for k clusters\nof relative rates (PCA)"))
 			
+	lamW <- clockspace$weighted.pca.clock.space[[1]]$sdev * sqrt(nrow(clockspace$weighted.pca.clock.space[[1]]$x))
 	topload <- head(order(apply(clockspace$weighted.pca.clock.space[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
-        lxW <- cbind(clockspace$weighted.pca.clock.space[[1]]$rotation[topload,1])
-    lyW <- cbind(clockspace$weighted.pca.clock.space[[1]]$rotation[topload,2])
+        lxW <- cbind(t(t(clockspace$weighted.pca.clock.space[[1]]$rotation[topload,1]) * lamW[1]))
+    lyW <- cbind(t(t(clockspace$weighted.pca.clock.space[[1]]$rotation[topload,2]) * lamW[2]))
     rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))
     if(any(abs(c(lxW, lyW)) < 1e-4)){
                 nonzeroloads <- which(abs(lxW) > 1e-4 & abs(lyW) > 1e-4)

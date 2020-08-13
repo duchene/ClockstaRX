@@ -76,9 +76,10 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.
 		if(pca){
 		    dev.new(width=16, height=4, unit="in")
                     par(mfrow = c(1,4))
+	lam <- pcadata.raw[[1]]$sdev * sqrt(nrow(pcadata.raw[[1]]$x))
 	topload <- head(order(apply(pcadata.raw[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
-        lx <- cbind(pcadata.raw[[1]]$rotation[topload,1])
-        ly <- cbind(pcadata.raw[[1]]$rotation[topload,2])
+        lx <- cbind(t(t(pcadata.raw[[1]]$rotation[topload,1]) * lam[1]))
+        ly <- cbind(t(t(pcadata.raw[[1]]$rotation[topload,2]) * lam[2]))
         rownames(lx) <- rownames(ly) <- gsub("V", "br ", rownames(lx))
         if(any(abs(c(lx, ly)) < 1e-4)){
                 nonzeroloads <- which(abs(lx) > 1e-4 & abs(ly) > 1e-4)
@@ -95,9 +96,10 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.
                 lines(tail(nulldat[,c(2, 1)], length(pcadata.raw[[1]]$sdev)), col = 2)
                 legend("topright", pch = c(17, 20), col = c("red", "darkgrey"), legend = c("Empirical", "Permuted"))
 		    
+	lamW <- pcadata.weighted[[1]]$sdev * sqrt(nrow(pcadata.weighted[[1]]$x))
 	topload <- head(order(apply(pcadata.weighted[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
-        lxW <- cbind(pcadata.weighted[[1]]$rotation[topload,1])
-    lyW <- cbind(pcadata.weighted[[1]]$rotation[topload,2])
+        lxW <- cbind(t(t(pcadata.weighted[[1]]$rotation[topload,1]) * lamW[1]))
+    lyW <- cbind(t(t(pcadata.weighted[[1]]$rotation[topload,2]) * lamW[2]))
     rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))
     if(any(abs(c(lxW, lyW)) < 1e-4)){
                 nonzeroloads <- which(abs(lxW) > 1e-4 & abs(lyW) > 1e-4)

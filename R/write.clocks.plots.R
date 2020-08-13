@@ -90,31 +90,33 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
         if(mds) par(mfrow = c(length(varstoplot) - 3, 2)) else par(mfrow = c(length(varstoplot) - 1, 2))
 	
 	# First plot the clustering results
+	lam <- groupclocks$pca.clock.space[[1]]$sdev * sqrt(nrow(groupclocks$pca.clock.space[[1]]$x))
 	topload <- head(order(apply(groupclocks$pca.clock.space[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
-	lx <- cbind(groupclocks$pca.clock.space[[1]]$rotation[topload,1])
-	ly <- cbind(groupclocks$pca.clock.space[[1]]$rotation[topload,2])
+	lx <- cbind(t(t(groupclocks$pca.clock.space[[1]]$rotation[topload,1]) * lam[1]))
+	ly <- cbind(t(t(groupclocks$pca.clock.space[[1]]$rotation[topload,2]) * lam[2]))
 	rownames(lx) <- rownames(ly) <- gsub("V", "br ", rownames(lx))
 	if(any(abs(c(lx, ly)) < 1e-4)){
 		nonzeroloads <- which(abs(lx) > 1e-4 & abs(ly) > 1e-4)
 		lx <- cbind(lx[nonzeroloads,])
 		ly <- cbind(ly[nonzeroloads,])
 	}
-	plot(groupclocks$pca.clock.space[[1]]$x[,1], groupclocks$pca.clock.space[[1]]$x[,2], pch = 19, col = as.numeric(groupclocks$pca.clustering[, groupclocks$pca.best.k]) + 1, xlab=paste0("PC 1 (", round(summary(groupclocks$pca.clock.space[[1]])$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(summary(groupclocks$pca.clock.space[[1]])$importance[5]*100, 1), "%)"), main = "Relative rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lx), range(groupclocks$pca.clock.space[[1]]$x[,1]))), max(c(range(lx), range(groupclocks$pca.clock.space[[1]]$x[,1])))), ylim = c(min(c(range(ly), range(groupclocks$pca.clock.space[[1]]$x[,2]))), max(c(range(ly), range(groupclocks$pca.clock.space[[1]]$x[,2])))))
+	plot(groupclocks$pca.clock.space[[1]]$x[,1:2], pch = 19, col = as.numeric(groupclocks$pca.clustering[, groupclocks$pca.best.k]) + 1, xlab=paste0("PC 1 (", round(summary(groupclocks$pca.clock.space[[1]])$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(summary(groupclocks$pca.clock.space[[1]])$importance[5]*100, 1), "%)"), main = "Relative rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lx), range(groupclocks$pca.clock.space[[1]]$x[,1]))), max(c(range(lx), range(groupclocks$pca.clock.space[[1]]$x[,1])))), ylim = c(min(c(range(ly), range(groupclocks$pca.clock.space[[1]]$x[,2]))), max(c(range(ly), range(groupclocks$pca.clock.space[[1]]$x[,2])))))
 	legend("topright", legend = paste0("k = ", groupclocks$pca.best.k))
 	abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
 	arrows(x0=0, x1=lx, y0=0, y1=ly, length=0.1, lwd=1)
 	text(lx, ly, labels=rownames(lx), pos = c(3,1,3,1), offset=0.3, cex=1)
 	
+	lamW <- groupclocks$weighted.pca.clock.space[[1]]$sdev * sqrt(nrow(groupclocks$weighted.pca.clock.space[[1]]$x))
 	topload <- head(order(apply(groupclocks$weighted.pca.clock.space[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
-	lxW <- cbind(groupclocks$weighted.pca.clock.space[[1]]$rotation[topload,1])
-    lyW <- cbind(groupclocks$weighted.pca.clock.space[[1]]$rotation[topload,2])
+	lxW <- cbind(t(t(groupclocks$weighted.pca.clock.space[[1]]$rotation[topload,1]) * lamW[1]))
+    lyW <- cbind(t(t(groupclocks$weighted.pca.clock.space[[1]]$rotation[topload,2]) * lamW[2]))
     rownames(lxW) <- rownames(lyW) <- gsub("V", "br ", rownames(lxW))
     if(any(abs(c(lxW, lyW)) < 1e-4)){
                 nonzeroloads <- which(abs(lxW) > 1e-4 & abs(lyW) > 1e-4)
                 lxW <- cbind(lxW[nonzeroloads,])
                 lyW <- cbind(lyW[nonzeroloads,])
     }
-    plot(groupclocks$weighted.pca.clock.space[[1]]$x[,1], groupclocks$weighted.pca.clock.space[[1]]$x[,2], pch = 19, col = as.numeric(groupclocks$weighted.pca.clustering[, groupclocks$weighted.pca.best.k]) + 1, xlab=paste0("PC 1 (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[5]*100, 1), "%)"), main = "Residual rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]]$x[,1]))), max(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]]$x[,1])))), ylim = c(min(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]]$x[,2]))), max(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]]$x[,2])))))
+    plot(groupclocks$weighted.pca.clock.space[[1]]$x[,1:2], pch = 19, col = as.numeric(groupclocks$weighted.pca.clustering[, groupclocks$weighted.pca.best.k]) + 1, xlab=paste0("PC 1 (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[2]*100, 1), "%)"), ylab=paste0("PC 2 (", round(summary(groupclocks$weighted.pca.clock.space[[1]])$importance[5]*100, 1), "%)"), main = "Residual rates clusters\nand top branch loadings (PCA)", xlim = c(min(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]]$x[,1]))), max(c(range(lxW), range(groupclocks$weighted.pca.clock.space[[1]]$x[,1])))), ylim = c(min(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]]$x[,2]))), max(c(range(lyW), range(groupclocks$weighted.pca.clock.space[[1]]$x[,2])))))
 	legend("topright", legend = paste0("k = ", groupclocks$weighted.pca.best.k))
 	abline(v=0, lty=2, col="grey50"); abline(h=0, lty=2, col="grey50")
     arrows(x0=0, x1=lxW, y0=0, y1=lyW, length=0.1, lwd=1)
