@@ -214,7 +214,10 @@ ClockstaRX.outputs.2 <- diagnose.clocks(loctrs = locus.trees, sptr = species.tre
 References
 ----------
 
-Duchene, S., & Ho, S. Y. (2014a). Using multiple relaxed-clock models to estimate evolutionary timescales from DNA sequence data. *Molecular Phylogenetics and Evolution* (77): 65-70.
+Duchene, S., & Ho, S. Y. (2014a). Using multiple relaxed-clock models to estimate evolutionary timescales from DNA sequence data. Molecular Phylogenetics and Evolution (77): 65-70.
+
 Bedford, T., & Hartl, D. L. (2008). Overdispersion of the molecular clock: temporal variation of gene-specific substitution rates in Drosophila. Molecular biology and evolution, 25(8), 1631-1638.
+
 Björklund, M. (2019). Be careful with your principal components. Evolution, 73(10), 2151-2158.
+
 Vieira, V. N. C. S. (2012). Permutation tests to estimate significances on Principal Components Analysis. Computational Ecology and Software, 2(2), 103.
