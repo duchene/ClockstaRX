@@ -35,7 +35,7 @@ branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.thr
 	if(any(spedgetaxa1 %in% locus.tree$tip.label) && any(spedgetaxa2 %in% locus.tree$tip.label)){
 		loctax1 <- locus.tree$tip.label[which(locus.tree$tip.label %in% spedgetaxa1)]
 		loctax2 <- locus.tree$tip.label[which(locus.tree$tip.label %in% spedgetaxa2)]
-		if(is.monophyletic(locus.tree, c(loctax1, loctax2))){
+		if(is.monophyletic(locus.tree, locus.tree$tip.label[which(locus.tree$tip.label %in% c(loctax1, loctax2))])){
 			if(!is.monophyletic(locus.tree, loctax1) || !is.monophyletic(locus.tree, loctax2)) return(NA)
 			
 			mrcanode <- getMRCA(locus.tree, c(loctax1, loctax2))
