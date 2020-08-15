@@ -38,10 +38,12 @@ branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.thr
 		if(is.monophyletic(locus.tree, locus.tree$tip.label[which(locus.tree$tip.label %in% c(loctax1, loctax2))])){
 			if(!is.monophyletic(locus.tree, loctax1) || !is.monophyletic(locus.tree, loctax2)) return(NA)
 			
+			locus.tree <- root(locus.tree, outgroup = locus.tree$tip.label[which(!locus.tree$tip.label %in% c(loctax1, loctax2))], resolve.root = T)
+			
 			mrcanode <- getMRCA(locus.tree, c(loctax1, loctax2))
 			
-			# Remove branch with low support
-        		if(!is.null(locus.tree$node.label)) if(!is.na(as.numeric(locus.tree$node.label[mrcanode - Ntip(locus.tree)]))) if(as.numeric(locus.tree$node.label[mrcanode - Ntip(locus.tree)]) < branch.support.threshold) return(NA)
+			# Remove branch with low support - only takes nodelabels that are single values!
+        		if(!is.null(locus.tree$node.label)) if(!is.na(suppressWarnings(as.numeric(locus.tree$node.label[mrcanode - Ntip(locus.tree)])))) if(as.numeric(locus.tree$node.label[mrcanode - Ntip(locus.tree)]) < branch.support.threshold) return(NA)
 			
 			edgelen <- locus.tree$edge.length[which(locus.tree$edge[, 2] == mrcanode)]
 			if(length(edgelen) == 0){
