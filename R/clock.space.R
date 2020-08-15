@@ -1,4 +1,4 @@
-clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.branches = F, pca.permutations = 100, mean.scaling.brlen = 0.05, ncore = 1, make.plots = F, sammon.correction = F, verbose = T){
+clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.branches = F, pca.permutations = 100, mean.scaling.brlen = 0.05, ncore = 1, sammon.correction = F, verbose = T, pdf.file = NULL){
 
 	# If the package mice is to be used for imputation (possibly to add unwanted signal) add the following two arguments: N.imputations = 1, prop.sample.for.imputation = 0.1,
 	
@@ -66,15 +66,18 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.
         	pcadata.weighted <- pca.perm.test(impudats.weighted, perm = pca.permutations)
 	}
 	
-	if(make.plots){
+	if(!is.null(pdf.file)){
 		if(mds){
-		    dev.new(width=8, height=4, unit="in")
+		    pdf(paste0(pdf.file, ".MDS.basic.pdf"), width=8, height=4, useDingbats = F)
+		    #dev.new(width=8, height=4, unit="in")
                     par(mfrow = c(1,2))
 		    plot(mdsdata.bsd$points, pch = 19, xlab = "Dim 1", ylab = "Dim 2", main = "Relative rates (MDS)")
 		    plot(mdsdata.weighted$points, pch = 19, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (MDS)")
+		    dev.off()
 		}
 		if(pca){
-		    dev.new(width=16, height=4, unit="in")
+		    pdf(paste0(pdf.file, ".PCA.scree.pdf"), width=16, height=4, useDingbats = F)
+		    #dev.new(width=16, height=4, unit="in")
                     par(mfrow = c(1,4))
 	lam <- pcadata.raw[[1]]$sdev * sqrt(nrow(pcadata.raw[[1]]$x))
 	topload <- head(order(apply(pcadata.raw[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
@@ -115,7 +118,7 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.
 		plot(nulldat[,c(2, 1)], pch = c(rep(20, nrow(nulldat) - length(pcadata.weighted[[1]]$sdev)), rep(17, length(pcadata.weighted[[1]]$sdev))), col = c(rep("darkgrey", nrow(nulldat) - length(pcadata.weighted[[1]]$sdev)), rep("red", length(pcadata.weighted[[1]]$sdev))), main = "Residual rates PCA scree", ylab = "Proportion variance explained", xlab = "Principal component")
 		lines(tail(nulldat[,c(2, 1)], length(pcadata.weighted[[1]]$sdev)), col = 2)
 		legend("topright", pch = c(17, 20), col = c("red", "darkgrey"), legend = c("Empirical", "Permuted"))
-		
+		dev.off()
 		}
 	}
 	

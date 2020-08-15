@@ -1,4 +1,4 @@
-group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F, verbose = T){
+group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pdf.file = NULL){
 
 	#Clustering. The criterion for clustering is the following: if there is a significant decline in gap from one cluster cluster to two, then there is a single cluster. Otherwhise, the largest increase in gap leads to the optimum number of clusters (see Duchene et al. 2018, Syst. Biol.).
 	
@@ -50,24 +50,28 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F,
 	#rownames(clust.raw) <- rownames(clust.bsd) <- rownames(clust.bsdW) <- rownames(clockspace$imputed.clocks[[1]])
     	#colnames(clust.raw) <- colnames(clust.bsd) <- colnames(clust.bsdW) <- paste0("k=", 1:kmax)
 	
-	if(make.plots){
-		if(mds & pca){
-		        dev.new(width=16, height=8, unit="in")
-			par(mfrow = c(2, 4))
-		} else {
-		        dev.new(width=16, height=4, unit="in")
-			par(mfrow = c(1, 4))
-		}
+	if(!is.null(pdf.file)){
+		#if(mds & pca){
+		#        dev.new(width=16, height=8, unit="in")
+		#	par(mfrow = c(2, 4))
+		#} else {
+		#        dev.new(width=16, height=4, unit="in")
+		#	par(mfrow = c(1, 4))
+		#}
 		if(mds){
+			pdf(paste0(pdf.file, ".MDS.clusters.pdf"), width=16, height=4, useDingbats = F)
+			par(mfrow = c(1, 4))
 			plot(clockspace$bsd.clock.space$points, pch = 19, col = as.numeric(clust.bsd[,npartbsd[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Relatve rates (MDS)")
 			legend("topright", legend = paste0("k = ", npartbsd))
 			plot(clusdatbsd, main = c("Support for k clusters\nof relative rates (MDS)"))
 			plot(clockspace$weighted.bsd.clock.space$points, pch = 19, col = as.numeric(clust.bsdW[,npartbsdW[1]]) + 1, xlab = "Dim 1", ylab = "Dim 2", main = "Residual rates (MDS)")
 			legend("topright", legend = paste0("k = ", npartbsdW))
 			plot(clusdatbsdW, main = c("Support for k clusters\nof residual rates (MDS)"))
+			dev.off()
 		}
 		if(pca){
-			
+	pdf(paste0(pdf.file, ".PCA.clusters.pdf"), width=16, height=4, useDingbats = F)
+	par(mfrow = c(1, 4))
 	lam <- clockspace$pca.clock.space[[1]]$sdev * sqrt(nrow(clockspace$pca.clock.space[[1]]$x))
 	topload <- head(order(apply(clockspace$pca.clock.space[[1]]$rotation[,1:2]^2, 1, function(x) sqrt(sum(x))), decreasing = T), 10)
         lx <- cbind(t(t(clockspace$pca.clock.space[[1]]$rotation[topload,1]) * lam[1]))
@@ -103,6 +107,7 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, make.plots = F,
     text(lxW, lyW, labels=rownames(lxW), pos = c(3,1,3,1), offset=0.1, cex=1)
 			
 			plot(clusdatpcaW, main = c("Support for k clusters\nof residual rates (PCA)"))
+		dev.off()
 		}
 		
 		# If using the package mice for imputation, then add plot summarising the clustering findings of different imputations.
