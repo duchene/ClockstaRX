@@ -1,9 +1,9 @@
-collect.clocks <- function(loctrs, sptr, sp.time.tree = T, branch.support.threshold = 0, verbose = T){
+collect.clocks <- function(loctrs, sptr, sp.time.tree = T, branch.support.threshold = 0, branch.length.threshold = 1e-6, verbose = T){
 	require(phangorn)
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
 
 	# Collect rates
-	ratesmat <- do.call(rbind, lapply(loctrs, function(x) get.locus.rates(x, sptr = sptr, branch.support.threshold = branch.support.threshold)))
+	ratesmat <- do.call(rbind, lapply(loctrs, function(x) get.locus.rates(x, sptr = sptr, branch.support.threshold = branch.support.threshold, branch.length.threshold = branch.length.threshold)))
 	ratesmat <- apply(as.data.frame(ratesmat), 2, as.numeric)
 	if(sp.time.tree) for(i in 1:Nedge(sptr)) ratesmat[,i] <- ratesmat[,i] / sptr$edge.length[i]
 	

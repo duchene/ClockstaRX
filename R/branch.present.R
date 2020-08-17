@@ -1,6 +1,6 @@
 # Missing exclusion of branches by branch support
 
-branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.threshold = 0){
+branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.threshold = 0, branch.length.threshold = 1e-6){
 	
 	subrootchildren <- Descendants(sp.tree, sp.tree$edge[sptredge, 1], type = "children")
 	
@@ -51,7 +51,7 @@ branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.thr
 				mrcanode <- alldaughters[which(alldaughters != getMRCA(locus.tree, loctax1) && alldaughters != getMRCA(locus.tree, loctax2))]
 				edgelen <- locus.tree$edge.length[which(locus.tree$edge[, 2] == mrcanode)]
 			}
-			if(length(edgelen) == 0) return(NA)
+			if(length(edgelen) < branch.length.threshold) return(NA)
 			return(edgelen)
 		} else {
 		        return(NA)

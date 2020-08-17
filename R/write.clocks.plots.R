@@ -27,8 +27,8 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	nmissingbr <- sapply(1:length(loctrs), function(x) sum(is.na(groupclocks[[1]][x,])) / Nedge(loctrs[[x]]))
 	if("nmissingbr" %in% default.variables) varstoplot["N missing species tree branches"] <- topo.colors(10)[as.numeric(cut(nmissingbr, breaks = 10))]
 
-	brsup <- sapply(loctrs, function(x) mean(as.numeric(x$node.label), na.rm = T))
-	if("brsup" %in% default.variables) varstoplot["Branch support"] <- topo.colors(10)[as.numeric(cut(brsup, breaks = 10))]
+	brsup <- sapply(loctrs, function(x) mean(suppressWarnings(as.numeric(x$node.label)), na.rm = T))
+	if("brsup" %in% default.variables) if(!all(is.na(brsup))) varstoplot["Branch support"] <- topo.colors(10)[as.numeric(cut(brsup, breaks = 10))]
 
 	trlen <- sapply(loctrs, function(x) sum(x$edge.length, na.rm = T) / Ntip(x))
 	if("trlen" %in% default.variables) varstoplot["Tree length"] <- topo.colors(10)[as.numeric(cut(trlen, breaks = 10))]
