@@ -1,4 +1,4 @@
-diagnose.clocks <- function(loctrs, sptr, sp.time.tree = T, branch.support.threshold = 0, branch.length.threshold = 1e-6, log.branches = F, pca = T, mds = F, pca.permutations = 100, mean.scaling.brlen = 0.05, ncore = 1, sammon.correction = F, clustering.boot.samps = 50, kmax = 10, other.data = NULL, pdf.file = "clock.diagnosis"){
+diagnose.clocks <- function(loctrs, sptr, sp.time.tree = T, branch.support.threshold = 0, branch.length.threshold = 5e-6, log.branches = F, pca = T, mds = F, pca.permutations = 100, mean.scaling.brlen = 0.05, ncore = 1, sammon.correction = F, clustering.boot.samps = 50, kmax = 10, other.data = NULL, pdf.file = "clock.diagnosis"){
 	cat("Collecting clocks", fill = T)
 	crx <- collect.clocks(loctrs, sptr, sp.time.tree = T, branch.support.threshold, branch.length.threshold, verbose = F)
 	cat("Creating representation of clock space", fill = T)

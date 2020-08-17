@@ -1,6 +1,6 @@
 # Missing exclusion of branches by branch support
 
-branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.threshold = 0, branch.length.threshold = 1e-6){
+branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.threshold = 0, branch.length.threshold = 5e-6){
 	
 	subrootchildren <- Descendants(sp.tree, sp.tree$edge[sptredge, 1], type = "children")
 	
@@ -26,7 +26,7 @@ branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.thr
 		if(!sp.tree$tip.label[sp.tree$edge[sptredge, 2]] %in% locus.tree$tip.label) return(NA)
 		tipname <- sp.tree$tip.label[sp.tree$edge[sptredge, 2]]
 		edgelen <- locus.tree$edge.length[which(locus.tree$edge[,2] == which(locus.tree$tip.label == tipname))]
-		return(edgelen)
+		if(edgelen > branch.length.threshold) return(edgelen) else return(NA)
 	}
 	
 	sisteredges <- Descendants(sp.tree, sp.tree$edge[sptredge, 2], type = "children")
@@ -51,8 +51,7 @@ branch.present <- function(locus.tree, sp.tree, sptredge = 1, branch.support.thr
 				mrcanode <- alldaughters[which(alldaughters != getMRCA(locus.tree, loctax1) && alldaughters != getMRCA(locus.tree, loctax2))]
 				edgelen <- locus.tree$edge.length[which(locus.tree$edge[, 2] == mrcanode)]
 			}
-			if(length(edgelen) < branch.length.threshold) return(NA)
-			return(edgelen)
+			if(edgelen > branch.length.threshold) return(edgelen) else return(NA)
 		} else {
 		        return(NA)
 		}

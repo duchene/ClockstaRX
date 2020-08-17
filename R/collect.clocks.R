@@ -1,4 +1,4 @@
-collect.clocks <- function(loctrs, sptr, sp.time.tree = T, branch.support.threshold = 0, branch.length.threshold = 1e-6, verbose = T){
+collect.clocks <- function(loctrs, sptr, sp.time.tree = T, branch.support.threshold = 0, branch.length.threshold = 5e-6, verbose = T){
 	require(phangorn)
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
 

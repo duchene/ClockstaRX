@@ -1,6 +1,6 @@
 # Replace all branches in gene tree with those in species tree where present.
 
-get.sptree.rates <- function(locustr, sptr, branch.support.threshold = 0, branch.length.threshold = 1e-6){
+get.sptree.rates <- function(locustr, sptr, branch.support.threshold = 0, branch.length.threshold = 5e-6){
 	if(is.rooted(locustr)) locustr <- unroot(locustr)
 	if(is.rooted(sptr)) sptr <- unroot(sptr)
 
