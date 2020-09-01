@@ -109,5 +109,5 @@ par(mfrow = c(1, 2))
 plot(myTree)
 nde <- pathnode(myTree)
 nde
-
-\keyword{ Node-density-effect }
+}
+\keyword{ Node-density }
