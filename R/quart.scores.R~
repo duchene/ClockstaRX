@@ -1,5 +1,5 @@
+# Calculates a distance matrix. The score ranges from 0 to 1, and takes as reference the smallest tree (i.e., it is the proportion of quartets in the smallest tree that occur in the larger tree). All trees require branch lengths (can be dummy, such as all 1).
 quart.scores <- function(trs){
-	     # All branches require a length (even if a dummy, e.g. 1).
 	     qscores <- matrix(NA, length(trs), length(trs))
 	     nedges <- sapply(trs, Nedge)
 	     for(i in 1:length(trs)){
