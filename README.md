@@ -2,13 +2,13 @@
 
 
 
-David Duchene, Mezzalina Vankan, Sebastian Duchene, and Simon Y.W. Ho.
+David A. Duchene, Sebastian Duchene, and Simon Y.W. Ho.
 
-david.duchene[at]anu.edu.au
-Research School of Biology
-Australian National University
+david.duchene[at]sund.ku.dk
+Globe Institute
+University of Copenhagen
 
-30 May, 2020
+11 July, 2022
 
 
 Introduction to ClockstaRX
