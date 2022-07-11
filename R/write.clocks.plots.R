@@ -193,7 +193,7 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	}
 	
 	# Return table with colours
-	if(pca) reslist <- c(groupclocks, list(pca.influential.branches = pBr-1, weighted.pca.influential.branches = pBrW-1))
+	if(pca & nPCs > 0) reslist <- c(groupclocks, list(pca.influential.branches = pBr-1, weighted.pca.influential.branches = pBrW-1))
 	reslist <- c(reslist, list(variable.colours = varstoplot))
 	
 	cat("Output includes:", fill = T)
