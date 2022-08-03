@@ -44,7 +44,7 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pd
         gapstablepcaW[is.infinite(gapstablepcaW)] <- NA
         
         #npartpcaW <- gapCR(gapstablepcaW[,3], gapstablepcaW[,4])
-	npartpca <- maxSE(f = gapstablepcaW[, "gap"], SE.f = gapstablepcaW[, "SE.sim"])
+	npartpcaW <- maxSE(f = gapstablepcaW[, "gap"], SE.f = gapstablepcaW[, "SE.sim"])
 	
 	clust.pca <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$pca.clock.space[[1]]$x[,1:2], k = x)$clustering))
     	clust.pcaW <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.pca.clock.space[[1]]$x[,1:2], k = x)$clustering))
