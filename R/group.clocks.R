@@ -14,13 +14,15 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pd
 	gapstablebsd <- clusdatbsd$Tab
         gapstablebsd[is.infinite(gapstablebsd)] <- NA
         
-	npartbsd <- gapCR(gapstablebsd[,3], gapstablebsd[,4])
+	#npartbsd <- gapCR(gapstablebsd[,3], gapstablebsd[,4])
+	npartbsd <- maxSE(f = gapstablebsd[, "gap"], SE.f = gapstablebsd[, "SE.sim"])
 	
 	clusdatbsdW <- clusGap(clockspace$weighted.bsd.clock.space$points, B = boot.samps, FUNcluster = pam, K.max = kmax)
         gapstablebsdW <- clusdatbsdW$Tab
         gapstablebsdW[is.infinite(gapstablebsdW)] <- NA
         
-        npartbsdW <- gapCR(gapstablebsdW[,3], gapstablebsdW[,4])
+        #npartbsdW <- gapCR(gapstablebsdW[,3], gapstablebsdW[,4])
+	npartbsdW <- maxSE(f = gapstablebsdW[, "gap"], SE.f = gapstablebsdW[, "SE.sim"])
     
 	# Collect cluster data at all numbers of clusters, for each rates space.
     	clust.bsd <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$bsd.clock.space$points, k = x)$clustering))
@@ -34,13 +36,15 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pd
         gapstablepca <- clusdatpca$Tab
         gapstablepca[is.infinite(gapstablepca)] <- NA
         
-        npartpca <- gapCR(gapstablepca[,3], gapstablepca[,4])
+        #npartpca <- gapCR(gapstablepca[,3], gapstablepca[,4])
+	npartpca <- maxSE(f = gapstablepca[, "gap"], SE.f = gapstablepca[, "SE.sim"])
 
         clusdatpcaW <- clusGap(clockspace$weighted.pca.clock.space[[1]]$x[,1:2], B = boot.samps, FUNcluster = pam, K.max = kmax)
         gapstablepcaW <- clusdatpcaW$Tab
         gapstablepcaW[is.infinite(gapstablepcaW)] <- NA
         
-        npartpcaW <- gapCR(gapstablepcaW[,3], gapstablepcaW[,4])
+        #npartpcaW <- gapCR(gapstablepcaW[,3], gapstablepcaW[,4])
+	npartpca <- maxSE(f = gapstablepcaW[, "gap"], SE.f = gapstablepcaW[, "SE.sim"])
 	
 	clust.pca <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$pca.clock.space[[1]]$x[,1:2], k = x)$clustering))
     	clust.pcaW <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.pca.clock.space[[1]]$x[,1:2], k = x)$clustering))
