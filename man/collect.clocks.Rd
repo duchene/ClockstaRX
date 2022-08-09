@@ -7,7 +7,7 @@ collect.clocks
 collect.clocks takes locus trees with branch lengths in substitutions per site and a species tree topology. It collects the lengths of quartet branches in locus trees that are present in the species tree.
 }
 \usage{
-collect.clocks(loctrs, sptr, make.plot = T, branch.support.threshold = 0)
+collect.clocks(loctrs, sptr, sp.time.tree = T, branch.support.threshold = 0, branch.length.threshold = 5e-6, verbose = T)
 }
 \arguments{
   \item{loctrs}{
