@@ -1,4 +1,4 @@
-print.clockstarx <- function(x) {
+show.clockstarx <- function(x) {
 	cat("This ClockstaRX object includes:\n")
 	for(i in 1:length(x)) cat(paste0(i, ". ", names(x)[i]), fill = T)
 	if(any(grepl("weighted", names(x)))) cat("Elements with the name 'weighted' involve 'residual' rates.\n")

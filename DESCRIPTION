@@ -1,11 +1,11 @@
 Package: ClockstaRX
 Type: Package
-Title: ClockstaRX: describing evolutionary rate patterns across genomic loci and lineages
-Version: 1.0.0
-Date: 2020-05-29
+Title: ClockstaRX: testing molecular clock hypotheses in genomic data
+Version: 1.1.1
+Date: 2023-04-07
 Author: David A. Duchene
-Maintainer: David Duchene <david.duchene@anu.edu.au>
-Description: ClockstarX allows the visualisation and description of groups of loci by their evolutionary rate pattern, and the influence of various lineages in driving these patterns.
+Maintainer: David Duchene <david.duchene@sund.ku.dk>
+Description: ClockstarX allows the visualisation and description of loci by their evolutionary rate pattern, and the influence of each lineage in driving these patterns.
 Depends: R (>= 2.15.0), ape (>= 3.0-8), phangorn (>= 1.7-4), cluster (>= 1.14.4)
 Suggests: doParallel (>= 1.0.3), foreach(>= 1.4.1)
 License: GNU

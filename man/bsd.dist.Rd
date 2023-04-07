@@ -1,78 +1,80 @@
-\name{pathnode}
-\alias{pathnode}
+\name{bsd.dist}
+\alias{bsd.dist}
 \title{
-pathnode
+bsd.dist
 }
 \description{
-This function ...
+This function calculates the distance between two trees in terms of their branch lengths, assuming identical topologies.
 }
 \usage{
-pathnode(phylo, tipsonly = T)
+bsd.dist(tree1, tree2, mean.brlen = 0.05)
 }
 \arguments{
-  \item{phylo}{
-A phylogenetic tree of class 'phylo'
+  \item{tree1}{
+A phylogenetic tree of class 'phylo'.
 }
-  \item{tipsonly}{
-A logical value (T / F) indicating whether the function should only return the root-to-tip distance and number of nodes along a lineage for the tips only. Select T for the tips only, and F for the tips and internal nodes.
+  \item{tree2}{
+A phylogenetic tree of class 'phylo'.
+}
+  \item{mean.brlen}{
+Value used for scaling the trees to make them comparable, which can be arbitrary.
 }
 }
 \details{
-The function plots...
+The function uses the branch score distance (Kuhner & Felsenstein 1994) between two trees, but first rescaling them to be as similar to each other as possible.
 }
 \value{
-A list with two items:
-  \item{roottotippath }{A vector with the distance from the root to the tips. If tipsonly==F, it will also include the distances for internal nodes.}
-  \item{nodesinpath }{A vector with the number of nodes along a lineage. If tipsonly==F, it will also include the number of nodes for internal nodes. These are counted from the tips to the root.}
+A numeric value that is the BSDmin distance.
 }
 \references{
-Venditti, Chris, Andrew Meade, and Mark Pagel. "Detecting the node-density artifact in phylogeny reconstruction." Systematic biology 55.4 (2006): 637-643.
-
+Kuhner, M. K. and Felsenstein, J. (1994) A simulation comparison of phylogeny algorithms under equal and unequal evolutionary rates, Molecular Biology and Evolution, *11(3)*, 459-468
 }
 \author{
 David Duchene
 }
-\note{
-Please see the references for more detailed information.
-}
 
 \seealso{
-Pending.
+quart.scores
 }
 \examples{
 set.seed(12345)
-myTree <- rtree(10)
-
-par(mfrow = c(1, 2))
-plot(myTree)
-nde <- pathnode(myTree)
-nde
+myTree1 <- rtree(20)
+myTree2 <- myTree1
+myTree2$edge.length <- runif(Nedge(myTree2), min = 0, max = 10)
+branchlengthdist <- bsd.dist(myTree1, myTree2)
+branchlengthdist
 
 
 
 ## The function is currently defined as
-function (phylo, tipsonly = T) 
+function (tree1, tree2, mean.brlen = 0.05)
 {
-    require(phangorn)
-    di.tr <- dist.nodes(phylo)
-    root.tr <- phylo$edge[, 1][!(phylo$edge[, 1] \%in\% phylo$edge[, 
-        2])][1]
-    tr.depth <- max(di.tr[as.numeric(colnames(di.tr)) == root.tr, 
-        ])
-    if (tipsonly == TRUE) {
-        roottotippath <- di.tr[as.numeric(rownames(di.tr)) == 
-            root.tr, 1:length(phylo$tip.label)]
-        nodesinpath <- sapply(1:length(phylo$tip.label), function(x) length(Ancestors(phylo, 
-            x)))
+    if (sum(tree1$edge.length) < sum(tree2$edge.length)) {
+        tree3 <- tree1
+        tree1 <- tree2
+        tree2 <- tree3
     }
-    else {
-        roottotippath <- di.tr[as.numeric(rownames(di.tr)) == 
-            root.tr, ]
-	nodesinpath <- sapply(1:(length(phylo$tip.label)+phylo$Nnode), function(x) length(Ancestors(phylo, x)))
+    tree.dist.opt <- function(x) {
+        tree3 <- tree2
+        tree3$edge.length <- tree2$edge.length * x
+        return(KF.dist(tree1, tree3))
     }
-    plot(roottotippath, nodesinpath, xlab = "Root-to-tip path length", 
-        ylab = "Number of parent nodes", pch = 20)
-    return(list(roottotippath = roottotippath, nodesinpath = nodesinpath))
-  }
+    opt.dist <- optim(0, fn = tree.dist.opt, method = "Brent",
+        lower = 0, upper = 50)
+    min.bdi <- opt.dist$value
+    scaling <- opt.dist$par
+    tree2.scaled <- tree2
+    tree2.scaled$edge.length <- tree2$edge.length * scaling
+    root.scaling <- mean.brlen/mean(c(tree1$edge.length[tree1$edge.length >
+        1e-05], tree2.scaled$edge.length[tree2.scaled$edge.length >
+        1e-05]))
+    tree1.root.scaled <- tree1
+    tree2.root.scaled <- tree2.scaled
+    tree1.root.scaled$edge.length <- tree1$edge.length * root.scaling
+    tree2.root.scaled$edge.length <- tree2.scaled$edge.length *
+        root.scaling
+    min.bdi.root.scaled <- KF.dist(tree1.root.scaled, tree2.root.scaled)
+    return(min.bdi.root.scaled)
 }
-\keyword{ Node-density-effect }
+}
+\keyword{ branch length distance }
