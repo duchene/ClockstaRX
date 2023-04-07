@@ -19,5 +19,6 @@ collect.clocks <- function(loctrs, sptr, sp.time.tree = T, branch.support.thresh
 	trlen$edge.length <- apply(ratesmat, 2, function(x) if(all(is.na(x))) 0 else median(x, na.rm = T))
 	reslist <- list(raw.rates.matrix = ratesmat, N.loci.per.branch = locN, N.samples.tree = trN, median.clock.tree = trlen)
 	if(verbose) for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T)
+	class(reslist) <- "clockstarx"
 	return(reslist)
 }

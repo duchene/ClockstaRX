@@ -128,5 +128,6 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.
 	if(pca) reslist <- c(reslist, list(pca.clock.space = pcadata.raw, weighted.pca.clock.space = pcadata.weighted))
 	if(verbose){ cat("Output includes:", fill = T)
         for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T) }
+	class(reslist) <- "clockstarx"
 	return(reslist)
 }

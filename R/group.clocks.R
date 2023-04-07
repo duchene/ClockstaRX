@@ -124,5 +124,6 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pd
 	if(pca) reslist <- c(reslist, list(pca.cluster.support = clusdatpca, weighted.pca.cluster.support = clusdatpcaW, pca.clustering = clust.pca, weighted.pca.clustering = clust.pcaW, pca.best.k = npartpca, weighted.pca.best.k = npartpcaW))
 	if(verbose){ cat("Output includes:", fill = T)
         for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T) }
+	class(reslist) <- "clockstarx"
 	return(reslist)
 }
