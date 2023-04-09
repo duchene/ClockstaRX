@@ -7,6 +7,14 @@ setMethod("initialize", "clockstarx", function(.Object, data = list()) {
   .Object
 })
 
+setMethod("initialize", "clockstarx", function(.Object, data = list()) {
+  if (!is.null(data) && !is.list(data)) {
+    stop("Value of 'data' slot must be a list")
+  }
+  .Object@data <- data
+  .Object
+})
+
 setMethod("$", "clockstarx", function(x, name) {
   x@data[[name]]
 })
@@ -19,6 +27,19 @@ setMethod("[[<-", "clockstarx", function(x, i, value) {
 })
 setMethod("[<-", "clockstarx", function(x, i, value) {
   x@data[[i]] <- value
+  x
+})
+setMethod("as.list", "clockstarx", function(x) {
+  as.list(x@data)
+})
+setMethod("c", "clockstarx", function(...) {
+  args <- list(...)
+  for (arg in args) {
+    if (!is.list(arg)) {
+      stop("Input must be a list")
+    }
+    x <- c(x, arg)
+  }
   x
 })
 
