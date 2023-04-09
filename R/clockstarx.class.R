@@ -1,37 +1,4 @@
-setClass("crx", contains = "VIRTUAL")
-
-setClass("clockstarx", contains = "crx", slots = list(data = "list"))
-
-setMethod("initialize", "clockstarx", function(.Object, data = list()) {
-  .Object@data <- data
-  .Object
-})
-
-setMethod("initialize", "clockstarx", function(.Object, data = list()) {
-  if (!is.null(data) && !is.list(data)) {
-    stop("Value of 'data' slot must be a list")
-  }
-  .Object@data <- data
-  .Object
-})
-
-setMethod("$", "clockstarx", function(x, name) {
-  x@data[[name]]
-})
-setMethod("length", "clockstarx", function(x) length(x@data))
-setMethod("[", "clockstarx", function(x, i) x@data[[i]])
-setMethod("[[", "clockstarx", function(x, i) x@data[[i]])
-setMethod("[[<-", "clockstarx", function(x, i, value) {
-  x@data[[i]] <- value
-  x
-})
-setMethod("[<-", "clockstarx", function(x, i, value) {
-  x@data[[i]] <- value
-  x
-})
-setMethod("as.list", "clockstarx", function(x) {
-  as.list(x@data)
-})
+setClass("clockstarx", contains = "list")
 
 setMethod("print",
 	"clockstarx",
