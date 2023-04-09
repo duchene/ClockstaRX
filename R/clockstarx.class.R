@@ -7,7 +7,7 @@ setMethod("initialize", "clockstarx", function(.Object, data = list()) {
   .Object
 })
 
-setMethod("$", "MyConcreteList", function(x, name) {
+setMethod("$", "clockstarx", function(x, name) {
   x@data[[name]]
 })
 setMethod("length", "clockstarx", function(x) length(x@data))
