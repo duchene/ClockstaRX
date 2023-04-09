@@ -23,7 +23,7 @@ ClockstaRX is an R package for analyses of phylogenomic molecular evolutionary c
 
 For each of the branches present in the species tree (represented as a quartet), the data on molecular rates is extracted from across locus trees. Cases where quartets are missing in locus trees are taken as missing data, and are expected to naturally occur due to tree estimation error or discordant gene tree history.
 
-The method represents the available data on relative (raw) molecular clocks in two dimensions (using MDS or PCA). ClockstaRX allows the user to visualize the variation of rates across the data and to identify the loci and lineages that are dominating variation in rates. It also identifies the optimal number of clocks in the data for subsequent molecular dating analysis with programs such as [BEAST](https://www.beast2.org/), [MrBayes](http://mrbayes.sourceforge.net/), [PhyloBayes](http://megasun.bch.umontreal.ca/People/lartillot/www/index.htm). 
+The method represents the available data on molecular clocks in new Euclidean spaces using Multi-dimensional scaling or principal components analysis. ClockstaRX allows the user to visualize the variation of rates across the data and to identify the loci and lineages that are dominating variation in rates. It also identifies the optimal number of clocks in the data for subsequent molecular dating analysis with programs such as [BEAST](https://www.beast2.org/), [MrBayes](http://mrbayes.sourceforge.net/), [PhyloBayes](http://megasun.bch.umontreal.ca/People/lartillot/www/index.htm). 
 
 Please follow [this link](http://bioinformatics.oxfordjournals.org/content/early/2013/12/02/bioinformatics.btt665.full) for the publication of the previous version of ClockstaRX, ClockstaR.
 
