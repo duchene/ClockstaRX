@@ -37,8 +37,11 @@ David Duchene
 bsd.dist
 }
 
+\examples{
+
 ## The function is currently defined as
-function(locus.brlens, species.tree, mean.brlen = 0.05, ncore = 1){
+function(locus.brlens, species.tree, mean.brlen = 0.05, ncore = 1)
+{
 
         if(!is.null(rownames(locus.brlens))) locnames <- rownames(locus.brlens)
 
@@ -80,5 +83,6 @@ function(locus.brlens, species.tree, mean.brlen = 0.05, ncore = 1){
         #bsd.mat <- as.dist(bsd.mat)
 
         return(bsd.mat)
+}
 }
 \keyword{ BSDmin comparisons }
