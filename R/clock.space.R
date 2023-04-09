@@ -124,8 +124,8 @@ clock.space <- function(ratesmat, sptr, pca = T, mds = F, sp.time.tree = T, log.
 	
 	# Return all imputed rates matrices and rates spaces.
 	reslist <- c(ratesmat, list(imputed.clocks = impudats, weighted.imputed.clocks = impudats.weighted))
-	if(mds) reslist <- append(reslist, list(bsd.pairwise.matrix = bsdmat, weighted.bsd.pairwise.matrix = bsdmats.weighted, bsd.clock.space = mdsdata.bsd, weighted.bsd.clock.space = mdsdata.weighted))
-	if(pca) reslist <- append(reslist, list(pca.clock.space = pcadata.raw, weighted.pca.clock.space = pcadata.weighted))
+	if(mds) reslist <- c(reslist, list(bsd.pairwise.matrix = bsdmat, weighted.bsd.pairwise.matrix = bsdmats.weighted, bsd.clock.space = mdsdata.bsd, weighted.bsd.clock.space = mdsdata.weighted))
+	if(pca) reslist <- c(reslist, list(pca.clock.space = pcadata.raw, weighted.pca.clock.space = pcadata.weighted))
 	if(verbose){ cat("Output includes:", fill = T)
         for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T) }
 	reslist <- new("clockstarx", reslist)
