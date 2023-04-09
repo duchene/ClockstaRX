@@ -1,5 +1,5 @@
 setClass("crx", contains = "VIRTUAL")
-setClass("clockstarx", contains = "crx", slots = list())
+setClass("clockstarx", contains = "crx", slots = list(crx_list = "list"))
 
 setMethod("print",
 	"clockstarx",
