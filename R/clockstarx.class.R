@@ -1,4 +1,4 @@
-setClass("clockstarx",  representation(crx_list = "list"), byvalue = T)
+setClass("clockstarx",  representation(crx_list = "list"))
 
 setMethod("print",
 	"clockstarx",
