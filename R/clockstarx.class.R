@@ -1,5 +1,14 @@
 setClass("clockstarx",  representation(crx_list = "list"))
 
+setMethod(
+  "initialize",
+  "clockstarx",
+  function(.Object, crx_list) {
+    .Object@crx_list <- crx_list
+    .Object
+  }
+)
+
 setMethod("print",
 	"clockstarx",
 	function(x) {
