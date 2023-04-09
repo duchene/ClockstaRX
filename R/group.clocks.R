@@ -124,8 +124,8 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pd
 	
 	# Return clustering data and best numbers of clusters for each rates matrix.
 	reslist <- clockspace
-	if(mds) reslist <- c(reslist, list(bsd.cluster.support = clusdatbsd, weighted.bsd.cluster.support = clusdatbsdW, bsd.clustering = clust.bsd, weighted.bsd.clustering = clust.bsdW, bsd.best.k = npartbsd, weighted.bsd.best.k = npartbsdW))
-	if(pca) reslist <- c(reslist, list(pca.cluster.support = clusdatpca, weighted.pca.cluster.support = clusdatpcaW, pca.clustering = clust.pca, weighted.pca.clustering = clust.pcaW, pca.best.k = npartpca, weighted.pca.best.k = npartpcaW))
+	if(mds) reslist <- append(reslist, list(bsd.cluster.support = clusdatbsd, weighted.bsd.cluster.support = clusdatbsdW, bsd.clustering = clust.bsd, weighted.bsd.clustering = clust.bsdW, bsd.best.k = npartbsd, weighted.bsd.best.k = npartbsdW))
+	if(pca) reslist <- append(reslist, list(pca.cluster.support = clusdatpca, weighted.pca.cluster.support = clusdatpcaW, pca.clustering = clust.pca, weighted.pca.clustering = clust.pcaW, pca.best.k = npartpca, weighted.pca.best.k = npartpcaW))
 	if(verbose){ cat("Output includes:", fill = T)
         for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T) }
 	

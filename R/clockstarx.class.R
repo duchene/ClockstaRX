@@ -32,20 +32,6 @@ setMethod("[<-", "clockstarx", function(x, i, value) {
 setMethod("as.list", "clockstarx", function(x) {
   as.list(x@data)
 })
-setMethod("c", signature(x = "crx"), function(x, ..., recursive = FALSE) {
-  args <- list(...)
-  if (recursive) {
-    for (arg in args) {
-      if (!is.list(arg)) {
-        stop("Input must be a list")
-      }
-      x <- append(x, as.list(unlist(arg, recursive = FALSE, use.names = FALSE)))
-    }
-  } else {
-    x <- append(x, as.list(unlist(args, recursive = FALSE, use.names = FALSE)))
-  }
-  x
-})
 
 setMethod("print",
 	"clockstarx",
