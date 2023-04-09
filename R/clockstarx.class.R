@@ -39,10 +39,10 @@ setMethod("c", signature(x = "clockstarx"), function(x, ..., recursive = FALSE) 
       if (!is.list(arg)) {
         stop("Input must be a list")
       }
-      x <- c(x, unlist(arg, recursive = FALSE, use.names = FALSE))
+      x <- c(x, as.list(unlist(arg, recursive = FALSE, use.names = FALSE)))
     }
   } else {
-    x <- c(x, unlist(args, recursive = FALSE, use.names = FALSE))
+    x <- c(x, as.list(unlist(args, recursive = FALSE, use.names = FALSE)))
   }
   x
 })
