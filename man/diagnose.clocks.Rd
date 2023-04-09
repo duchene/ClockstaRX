@@ -1,7 +1,7 @@
-\name{diganose.clocks}
-\alias{diganose.clocks}
+\name{diagnose.clocks}
+\alias{diagnose.clocks}
 \title{
-diganose.clocks
+diagnose.clocks
 }
 \description{
 Perform a description of clocks signals across loci and lineages.

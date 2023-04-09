@@ -205,6 +205,6 @@ write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, def
 	
 	cat("Output includes:", fill = T)
         for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T)
-	class(reslist) <- "clockstarx"
+	reslist <- new("clockstarx", .Data = reslist)
 	return(reslist)
 }

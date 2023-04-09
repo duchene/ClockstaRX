@@ -1,78 +1,84 @@
-\name{pathnode}
-\alias{pathnode}
+\name{bsd.matrix}
+\alias{bsd.matrix}
 \title{
-pathnode
+bsd.matrix
 }
 \description{
-This function ...
+This function calculates pairwise matrix of bsd distances, assuming that all locus trees have the same topology as the species tree, or that missing branches have been imputed.
 }
 \usage{
-pathnode(phylo, tipsonly = T)
+bsd.matrix(locus.brlens, species.tree, mean.brlen = 0.05, ncore = 1)
 }
 \arguments{
-  \item{phylo}{
-A phylogenetic tree of class 'phylo'
+  \item{locus.brlens}{
+A matrix as produced by 'collect.clocks' of locus rates where rows are loci and columns are branches.
 }
-  \item{tipsonly}{
-A logical value (T / F) indicating whether the function should only return the root-to-tip distance and number of nodes along a lineage for the tips only. Select T for the tips only, and F for the tips and internal nodes.
+  \item{species.tree}{
+Species tree topology structure of class 'phylo'.
+}
+  \item{mean.brlen}{
+Scaling value to be passed on to bsd.dist.
+}
+  \item{ncore}{
+Numeric indicating how many computer cores to use during the calculation of the matrix.
 }
 }
 \details{
-The function plots...
+The function produces pairwise distances between loci in terms of their branch lengths. This requires an optimisation of their minimal divergence that can be computationally costly, and parallel computing is therefore advisable. The function is used internally by 'clock.space'.
 }
 \value{
-A list with two items:
-  \item{roottotippath }{A vector with the distance from the root to the tips. If tipsonly==F, it will also include the distances for internal nodes.}
-  \item{nodesinpath }{A vector with the number of nodes along a lineage. If tipsonly==F, it will also include the number of nodes for internal nodes. These are counted from the tips to the root.}
-}
-\references{
-Venditti, Chris, Andrew Meade, and Mark Pagel. "Detecting the node-density artifact in phylogeny reconstruction." Systematic biology 55.4 (2006): 637-643.
-
+A matrix of pairwise BSDmin distances among loci.
 }
 \author{
 David Duchene
 }
-\note{
-Please see the references for more detailed information.
-}
 
 \seealso{
-Pending.
+bsd.dist
 }
-\examples{
-set.seed(12345)
-myTree <- rtree(10)
-
-par(mfrow = c(1, 2))
-plot(myTree)
-nde <- pathnode(myTree)
-nde
-
-
 
 ## The function is currently defined as
-function (phylo, tipsonly = T) 
+function (locus.brlens, species.tree, mean.brlen = 0.05, ncore = 1)
 {
-    require(phangorn)
-    di.tr <- dist.nodes(phylo)
-    root.tr <- phylo$edge[, 1][!(phylo$edge[, 1] \%in\% phylo$edge[, 
-        2])][1]
-    tr.depth <- max(di.tr[as.numeric(colnames(di.tr)) == root.tr, 
-        ])
-    if (tipsonly == TRUE) {
-        roottotippath <- di.tr[as.numeric(rownames(di.tr)) == 
-            root.tr, 1:length(phylo$tip.label)]
-        nodesinpath <- sapply(1:length(phylo$tip.label), function(x) length(Ancestors(phylo, 
-            x)))
+    if (!is.null(rownames(locus.brlens)))
+        locnames <- rownames(locus.brlens)
+    bsdmatdim <- nrow(locus.brlens)
+    trs <- apply(locus.brlens, 1, function(x) {
+        species.tree$edge.length <- x
+        return(species.tree)
+    })
+    class(trs) <- "multiPhylo"
+    if (ncore == 1) {
+        bsd.mat <- do.call(rbind, lapply(2:bsdmatdim, function(x) c(sapply(1:(x -
+            1), function(y) bsd.dist(trs[[x]], trs[[y]], mean.brlen = mean.brlen)),
+            rep(NA, length(x:bsdmatdim)))))
     }
-    else {
-        roottotippath <- di.tr[as.numeric(rownames(di.tr)) == 
-            root.tr, ]
-	nodesinpath <- sapply(1:(length(phylo$tip.label)+phylo$Nnode), function(x) length(Ancestors(phylo, x)))
+    else if (ncore > 1) {
+        require(foreach)
+        require(doParallel)
+        sub.trees <- list()
+        for (k in 2:length(trs)) {
+            sub.trees[[k]] <- trs[1:k - 1]
+        }
+        compute.tree.dists <- function(tree.sub.list, fix.tree) {
+            res <- sapply(tree.sub.list, function(a) bsd.dist(fix.tree,
+                a))
+            return(res)
+        }
+        cl <- makeCluster(ncore)
+        registerDoParallel(cl)
+        cat(paste("Starting parallel computing with", ncore,
+            "cores"), fill = T)
+        res.par <- foreach(s.trees = sub.trees, j = 1:length(trs),
+            .packages = c("phangorn", "ape"), .export = c("bsd.dist")) %dopar%
+            c(compute.tree.dists(tree.sub.list = s.trees, fix.tree = trs[[j]]),
+                rep(NA, bsdmatdim - j + 1))
+        stopCluster(cl)
+        cat("Finished parallel computing", fill = T)
+        bsd.mat <- do.call(rbind, res.par)
     }
-    plot(roottotippath, nodesinpath, xlab = "Root-to-tip path length", 
-        ylab = "Number of parent nodes", pch = 20)
-    return(list(roottotippath = roottotippath, nodesinpath = nodesinpath))
-  }
+    if (!is.null(rownames(locus.brlens)))
+        rownames(bsd.mat) <- colnames(bsd.mat) <- locnames
+    return(bsd.mat)
 }
-\keyword{ Node-density-effect }
+\keyword{ BSDmin comparisons }

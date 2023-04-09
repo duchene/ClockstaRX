@@ -28,6 +28,8 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pd
     	clust.bsd <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$bsd.clock.space$points, k = x)$clustering))
     	clust.bsdW <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.bsd.clock.space$points, k = x)$clustering))
     	
+	colnames(clust.bsd) <- colnames(clust.bsdW) <- paste0("k-", 1:(ncol(clust.bsd)))
+	
 	}
     
 	if(pca){
@@ -48,6 +50,8 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pd
 	
 	clust.pca <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$pca.clock.space[[1]]$x[,1:2], k = x)$clustering))
     	clust.pcaW <- do.call("cbind", lapply(1:kmax, function(x) pam(clockspace$weighted.pca.clock.space[[1]]$x[,1:2], k = x)$clustering))
+
+	colnames(clust.pca) <- colnames(clust.pcaW) <- paste0("k-", 1:(ncol(clust.pca)))
 
     	}
     
@@ -124,6 +128,7 @@ group.clocks <- function(clockspace, boot.samps = 50, kmax = 10, verbose = T, pd
 	if(pca) reslist <- c(reslist, list(pca.cluster.support = clusdatpca, weighted.pca.cluster.support = clusdatpcaW, pca.clustering = clust.pca, weighted.pca.clustering = clust.pcaW, pca.best.k = npartpca, weighted.pca.best.k = npartpcaW))
 	if(verbose){ cat("Output includes:", fill = T)
         for(i in 1:length(reslist)) cat(paste0(i, ". ", names(reslist)[i]), fill = T) }
-	class(reslist) <- "clockstarx"
+	
+	reslist <- new("clockstarx", .Data = reslist)
 	return(reslist)
 }
