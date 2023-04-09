@@ -1,4 +1,26 @@
-setClass("clockstarx", contains = "list")
+setClass("clockstarx",
+         representation(data = "list"),
+         prototype = prototype(data = list()))
+
+setOldClass(c("clockstarx"))
+
+setMethod("$", signature = "clockstarx", definition = function(x, name) {
+  return(x$data[[name]])
+})
+
+setMethod("[", signature = "clockstarx", definition = function(x, i, j, ...) {
+  return(x$data[i, j, ...])
+})
+
+setMethod("[[", signature = "clockstarx", definition = function(x, name) {
+  return(x$data[[name]])
+})
+
+setMethod("length", signature = "clockstarx", definition = function(x) {
+  return(length(x$data))
+})
+
+
 
 setMethod("print",
 	"clockstarx",
