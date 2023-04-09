@@ -1,15 +1,15 @@
 setClass("crx", contains = "VIRTUAL")
 
-# Define the concrete class that inherits from the virtual class
 setClass("clockstarx", contains = "crx", slots = list(data = "list"))
 
-# Define the constructor for the concrete class
 setMethod("initialize", "clockstarx", function(.Object, data = list()) {
   .Object@data <- data
   .Object
 })
 
-# Define methods for list-related functions
+setMethod("$", "MyConcreteList", function(x, name) {
+  x@data[[name]]
+})
 setMethod("length", "clockstarx", function(x) length(x@data))
 setMethod("[", "clockstarx", function(x, i) x@data[[i]])
 setMethod("[[", "clockstarx", function(x, i) x@data[[i]])
