@@ -59,20 +59,16 @@ function (tree1, tree2, mean.brlen = 0.05)
         tree3$edge.length <- tree2$edge.length * x
         return(KF.dist(tree1, tree3))
     }
-    opt.dist <- optim(0, fn = tree.dist.opt, method = "Brent",
-        lower = 0, upper = 50)
+    opt.dist <- optim(0, fn = tree.dist.opt, method = "Brent", lower = 0, upper = 50)
     min.bdi <- opt.dist$value
     scaling <- opt.dist$par
     tree2.scaled <- tree2
     tree2.scaled$edge.length <- tree2$edge.length * scaling
-    root.scaling <- mean.brlen/mean(c(tree1$edge.length[tree1$edge.length >
-        1e-05], tree2.scaled$edge.length[tree2.scaled$edge.length >
-        1e-05]))
+    root.scaling <- mean.brlen/mean(c(tree1$edge.length[tree1$edge.length > 1e-05], tree2.scaled$edge.length[tree2.scaled$edge.length > 1e-05]))
     tree1.root.scaled <- tree1
     tree2.root.scaled <- tree2.scaled
     tree1.root.scaled$edge.length <- tree1$edge.length * root.scaling
-    tree2.root.scaled$edge.length <- tree2.scaled$edge.length *
-        root.scaling
+    tree2.root.scaled$edge.length <- tree2.scaled$edge.length * root.scaling
     min.bdi.root.scaled <- KF.dist(tree1.root.scaled, tree2.root.scaled)
     return(min.bdi.root.scaled)
 }
