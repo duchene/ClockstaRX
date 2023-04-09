@@ -2,6 +2,8 @@
 
 write.clocks.plots <- function(groupclocks, loctrs, sptr, other.data = NULL, default.variables = c("ntaxa", "nmissingbr", "brsup", "trlen", "rttdist", "topdist"), pdf.file = "clock.diagnosis"){
 	
+	groupclocks <- as.list(groupclocks)
+	
 	# Extract default variables and create their colours
 	
 	if("bsd.clock.space" %in% names(groupclocks)) mds <- T else mds <- F
