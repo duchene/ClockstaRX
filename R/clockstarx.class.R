@@ -1,26 +1,26 @@
-setClass("clockstarx",
-         representation(data = "list"),
-         prototype = prototype(data = list()))
+setClass("crx", contains = "VIRTUAL")
 
-setOldClass(c("clockstarx"))
+# Define the concrete class that inherits from the virtual class
+setClass("clockstarx", contains = "crx", slots = list(data = "list"))
 
-setMethod("$", signature = "clockstarx", definition = function(x, name) {
-  return(x$data[[name]])
+# Define the constructor for the concrete class
+setMethod("initialize", "clockstarx", function(.Object, data = list()) {
+  .Object@data <- data
+  .Object
 })
 
-setMethod("[", signature = "clockstarx", definition = function(x, i, j, ...) {
-  return(x$data[i, j, ...])
+# Define methods for list-related functions
+setMethod("length", "clockstarx", function(x) length(x@data))
+setMethod("[", "clockstarx", function(x, i) x@data[[i]])
+setMethod("[[", "clockstarx", function(x, i) x@data[[i]])
+setMethod("[[<-", "clockstarx", function(x, i, value) {
+  x@data[[i]] <- value
+  x
 })
-
-setMethod("[[", signature = "clockstarx", definition = function(x, name) {
-  return(x$data[[name]])
+setMethod("[<-", "clockstarx", function(x, i, value) {
+  x@data[[i]] <- value
+  x
 })
-
-setMethod("length", signature = "clockstarx", definition = function(x) {
-  return(length(x$data))
-})
-
-
 
 setMethod("print",
 	"clockstarx",
