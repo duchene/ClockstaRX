@@ -32,7 +32,7 @@ setMethod("[<-", "clockstarx", function(x, i, value) {
 setMethod("as.list", "clockstarx", function(x) {
   as.list(x@data)
 })
-setMethod("c", signature(x = "clockstarx"), function(x, ..., recursive = FALSE) {
+setMethod("c", signature(x = "crx"), function(x, ..., recursive = FALSE) {
   args <- list(...)
   if (recursive) {
     for (arg in args) {
